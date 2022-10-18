@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Donation</title>
+</head>
+<body>
+<h1>Make donation Page</h1>
+<p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and submit the transaction id to verify the donation </p>
+<br>
+<br>
+<form >
+    <div class="error" style="background-color: red;"></div><br>
+    <label for="transaction_id">Transaction ID</label><br>
+    <input type="text" id="transaction_id" required><br>
+    <input type="submit" value="Donate"><br>
+</form>
+<br><br>
+
+<br><br>
+<div id="status"></div>
+
+<script>
+    const current_url = window.location.href;
+    const status = document.getElementById('status');
+    const id = current_url.split('/')[4];
+    const form = document.querySelector('form')
+    const transaction_id = document.querySelector('#transaction_id')
+    const display = document.querySelector('.error')
+    status.innerHTML = `<a href="/user/${id}">Go Back</a></p>`
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        console.log(transaction_id.value);
+        display.textContent = ''
+        try {
+            const res = await fetch('/api/auth/donor/donation', {
+                method: 'POST',
+                body: JSON.stringify({user_id:id, tnx_id:transaction_id.value}),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            const data = await res.json()
+            console.log(data);
+            if(res.status === 201){
+                const bc_call = await fetch('/api/auth/blockchain/makeDonation', {
+                    method: 'POST',
+                    body: JSON.stringify({donation_id:data.donation_id, amount:data.amount, details:data} ),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                console.log(await bc_call.json());
+                if (res.status === 201) {
+                    form.innerHTML = ''
+                    status.innerHTML = `<p>Donation Successfully made</p><br><p><a href="/donor/${id}">Go Back</a></p>`
+                } else {
+                    display.textContent = `<span>${data.message} <br> ${data.error}</span>`
+                }
+            }else {
+                display.textContent = `${data.message} || ${data.error}`
+            }
+        } catch (err) {
+            console.log(err.message)
+        }
+    })
+</script>
+</body>
+</html>

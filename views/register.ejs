@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+</head>
+<body>
+  <h1>Register Page</h1>
+  <div>
+  <form >
+    <p>Are you a User or Donor?</p>
+    <div>
+      <input type="radio" name="role" value="user" id="user" required>
+      <label for="user">User</label>
+    </div>
+    <div>
+      <input type="radio" name="role" value="donor" id="donor" required>
+      <label for="donor">Donor</label>
+    </div>
+  </div>
+    <div class="error" style="background-color: red;"></div><br>
+    <label for="username">Username</label><br>
+    <input type="text" id="username" required><br>
+    <label for="password">Password</label><br>
+    <input type="password" id="password" required><br>
+    <input type="submit" value="register"><br>
+  </form>
+  <a href="/login">Already registered? Login</a>
+
+  <script>
+    const form = document.querySelector('form')
+    const username = document.querySelector('#username')
+    const password = document.querySelector('#password')
+    const roles = document.querySelectorAll('input[name="role"]');
+    const display = document.querySelector('.error')
+     form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        display.textContent = ''
+       let selectedRole;
+       for (const role of roles) {
+         if (role.checked) {
+           selectedRole = role.value;
+           break;
+         }
+       }
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ username: username.value, password: password.value, role: selectedRole }),
+            headers: { 'Content-Type': 'application/json' }
+          })
+          const data = await res.json()
+          const bc_call = await fetch('/api/auth/blockchain/registration', {
+            method: 'POST',
+            body: JSON.stringify({ user_id: data.user, role: data.role, username: data.username}),
+            headers: { 'Content-Type': 'application/json' }
+          })
+          console.log(await bc_call.json());
+          if(res.status === 400 || res.status === 401){
+           return display.textContent = `${data.message}. ${data.error ? data.error : ''}`
+          }
+          if ( data.role === "admin"){
+            location.assign('/admin')
+          }
+          else if (data.role === "donor"){
+            location.assign(`/donor/${data.user}`)
+          }
+          else if (data.role === "user"){
+            location.assign(`/user/${data.user}`)
+          } else console.log("role not found")
+
+        } catch (err) {
+          console.log(err.message)
+        }
+
+      })
+  </script>
+</body>
+</html>

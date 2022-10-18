@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin page</title>
+</head>
+
+<body>
+<div class="display" style="background-color: red;"></div>
+<h2>All Users</h2>
+<div id="all_users"></div>
+<br>
+<h2>All Financial Aid Requests</h2>
+<div id="all_aid"></div>
+<br>
+<h2>All Donations</h2>
+<div id="all_donations"></div>
+<br>
+<div id="total_details"></div>
+<br><br>
+<button class="logout"><a href="/logout">Log Out</a></button>
+<script>
+    const display = document.querySelector('.display')
+    const total_details = document.querySelector('#total_details')
+    const all_users = document.querySelector('#all_users')
+    const all_aid = document.querySelector('#all_aid')
+    const all_donations = document.querySelector('#all_donations')
+    const getUsers = async () => {
+        const user_res = await fetch('/api/auth/blockchain/admin/getAllUser')
+        const user_data = await user_res.json()
+        user_data.users.map(user => {
+            const ul = `
+                        <li>User Name: ${user.other_details.user_name}</li>
+                        <li>User ID: ${user.user_id}</li>
+                        <li>Role: ${user.role}</li>
+                        <li>Blockchain Entry ID: ${user.bc_entry_id}</li><br>
+                        `
+            all_users.innerHTML += ul
+        })
+
+        const aid_res = await fetch('/api/auth/blockchain/admin/getAllAid')
+        const aid_data = await aid_res.json()
+        aid_data.beneficiary.map(aid => {
+            const isJsonString = str => {
+                try {
+                    JSON.parse(str);
+                } catch (e) {
+                    return false;
+                }
+                return true;
+            };
+            let aid_details;
+            if(isJsonString(aid.details)){
+                aid_details = JSON.parse(aid.details);
+            }else {
+                aid_details = aid.details;
+            }
+
+            const ul = `
+                        <li>Aid ID: ${aid.aid_id}</li>
+                        <li>Amount: ${aid.amount}</li>
+                        <li>Bank Name: ${aid_details.bank_name}</li>
+                        <li>Bank Account: ${aid_details.bank_account}</li>
+                        <li>Authorizer Name: ${aid_details.authorizer_name}</li>
+                        <li>Authorizer Details: ${aid_details.authorizer_phone}</li>
+                        <li>Beneficiary ID: ${aid_details.user_id}</li>
+                        <li>Beneficiary Blockchain ID: ${aid_details.bc_user_id}</li>
+                        <li>Aid Entry ID in Blockchain: ${aid.bc_entry_id}</li>
+                        <li>Status: ${aid.status}</li><br>
+                        ${aid.status === 'Pending' ? `<button class="approve" onclick="approveDonation(${aid.bc_entry_id})">Approve</button> <br>` : ''}
+                        <br>
+                        `
+            all_aid.innerHTML += ul
+        })
+        const donation_res = await fetch('/api/auth/blockchain/admin/getAllDonation')
+        const donation_data = await donation_res.json()
+        donation_data.donation_details.map(donation => {
+            const ul = `
+                        <li>Donor ID: ${donation.donor_id}</li>
+                        <li>Donor Blockchain ID: ${donation.details.bc_user_id}</li>
+                        <li>Donated Amount: ${donation.amount}</li>
+                        <li>Bank Name: ${donation.details.bank_name}</li>
+                        <li>Bank Account: ${donation.details.bank_account}</li>
+                        <li>Donation ID: ${donation.details.donation_id}</li>
+                        <li>Donation Entry ID in Blockchain: ${donation.bc_entry_id}</li>
+                        <li>Beneficiary Blockchain ID: ${donation.bc_user_id}</li>
+                        <li>Transaction ID: ${donation.details.tnx_id}</li>
+                        <br>
+                        `
+            all_donations.innerHTML += ul
+        })
+
+        const get_main_balance_res = await fetch('/api/auth/getMainBalance')
+        const get_main_balance_data = await get_main_balance_res.json()
+
+        total_details.innerHTML = `
+                                <h3>Available Balance in Blockchain Ledger: ${get_main_balance_data.main_balance}</h3>
+                                <h3>Total Users: ${user_data.users.length}</h3>
+                                <h3>Total Aid Request: ${aid_data.beneficiary.length}</h3>
+                                <h3>Total Donors: ${donation_data.donation_details.length}</h3>
+                                <h3>Total Donations: ${donation_data.total_donation}</h3>
+                                `
+    }
+    getUsers()
+    const approveDonation = async (id) => {
+        if (confirm("Are you sure, you want to approve this donation?")) {
+            const res = await fetch('/api/auth/blockchain/approveDonation', {
+                method: 'POST',
+                body: JSON.stringify({bc_entry_id: id}),
+                headers: {'Content-Type': 'application/json'}
+            })
+            const data = await res.json()
+            if (data.status === 'Approved') {
+                alert('Aid Request approved successfully')
+                window.location.reload()
+            } else {
+                alert('Something went wrong')
+            }
+        }
+    };
+</script>
+</body>
+</html>

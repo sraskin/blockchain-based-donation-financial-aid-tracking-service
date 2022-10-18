@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User page</title>
+</head>
+<body>
+  <p>User Details</p>
+  <ul id="user_details"></ul>
+  <br>
+  <p>Applied Aid List</p>
+  <div id="applied_aid_list">
+  </div>
+
+
+  <br><br><br>
+  <button id="make_request"></button>
+  <br><br><br>
+  <button class="logout"> <a href="/logout">Log Out</a></button>
+  <script>
+    const user_details = document.querySelector('#user_details');
+    const applied_aid_list = document.querySelector('#applied_aid_list');
+    const make_request = document.querySelector('#make_request');
+    const getUsers = async() => {
+      const current_url = window.location.href;
+      const id = current_url.split('/')[4];
+      const res = await fetch('/api/auth/blockchain/getUserByID', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: id}),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await res.json()
+      let li = `
+                <li>
+                <b>Username</b> => ${data.username} <br>
+                <b>Role</b> => ${data.role} <br>
+                <b>ID</b> => ${data.user_id} <br>
+                <b> Blockchain Entry ID</b> => ${data.blockchain_entry_id} <br>
+                </li>`
+      user_details.innerHTML = li
+
+      const aid_list_res = await fetch('/api/auth/blockchain/getAllAidByID', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: id}),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const aid_list_res_data = await aid_list_res.json()
+      console.log(aid_list_res_data.beneficiary[0])
+
+      aid_list_res_data.beneficiary.map((aid) => {
+        let ul = `<ul>
+                <li>
+                <b>Aid ID</b> => ${aid.aid_id} <br>
+                <b>Amount</b> => ${aid.amount} <br>
+                <b>Blockchain Entry ID</b> => ${aid.bc_entry_id} <br>
+                <b>Other Details</b> => ${aid.details} <br>
+                <b>Status</b> => ${aid.status} <br>
+                </li>
+                </ul>`
+        applied_aid_list.innerHTML += ul;
+      })
+
+      make_request.innerHTML = `<a href="/user/${id}/make_request">Make Aid Request</a>`
+    }
+    getUsers()
+  </script>
+</body>
+</html>

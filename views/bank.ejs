@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Transfer</title>
+</head>
+<body>
+<h1>Dummy Internet Banking Site</h1>
+<br><br><br>
+<form >
+    <div class="error" style="background-color: red;"></div><br>
+    <label for="account_number">Bank Account Number</label><br>
+    <input type="text" id="account_number" required><br>
+    <label for="bank_name">Bank Name</label><br>
+    <input type="text" id="bank_name" required><br>
+    <label for="amount">Amount</label><br>
+    <input type="text" id="amount" required><br>
+    <input type="submit" value="Transfer fund"><br>
+</form>
+<br><br>
+<div id="status"></div>
+
+<script>
+    const form = document.querySelector('form')
+    const display = document.querySelector('.error')
+    const status = document.querySelector('#status')
+    const account_number = document.querySelector('#account_number')
+    const bank_name = document.querySelector('#bank_name')
+    const amount = document.querySelector('#amount')
+    status.innerHTML = `<a href="/">Go Back</a></p>`
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        display.textContent = ''
+        try {
+            const res = await fetch('/api/auth/bank', {
+                method: 'POST',
+                body: JSON.stringify({bank_name: bank_name.value, bank_account: account_number.value, amount: +amount.value}),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            const data = await res.json()
+            console.log(data);
+            form.innerHTML = ''
+            status.innerHTML = `<p>Status: ${data.message}</p><p>Transaction ID: ${data.tnx_id}</p><p>Amount: ${data.amount}</p><p><a href="/">Go Back</a></p>`
+        } catch (err) {
+            console.log(err.message)
+        }
+    })
+</script>
+</body>
+</html>

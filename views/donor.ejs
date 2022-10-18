@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor page</title>
+</head>
+<body>
+<h1>Total Donated: <i id="total_donation">0</i></h1>
+<p>Donor Details</p>
+<ul id="user_details"></ul>
+<br>
+<p>Donation List</p>
+<div id="donation_list">
+</div>
+
+
+<br><br><br>
+<button id="make_request"></button>
+<br><br><br>
+<button class="logout"> <a href="/logout">Log Out</a></button>
+<script>
+    const user_details = document.querySelector('#user_details');
+    const donation_list = document.querySelector('#donation_list');
+    const make_request = document.querySelector('#make_request');
+    const total_donation = document.querySelector('#total_donation');
+    const getUsers = async() => {
+        const current_url = window.location.href;
+        const id = current_url.split('/')[4];
+        console.log(id);
+        const res = await fetch('/api/auth/blockchain/getUserByID', {
+            method: 'POST',
+            body: JSON.stringify({ user_id: id}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        const data = await res.json()
+        let li = `
+                <li>
+                <b>Donor name</b> => ${data.username} <br>
+                <b>Role</b> => ${data.role} <br>
+                <b>ID</b> => ${data.user_id} <br>
+                <b> Blockchain Entry ID</b> => ${data.blockchain_entry_id} <br>
+                </li>`
+        user_details.innerHTML = li
+
+        const aid_list_res = await fetch('/api/auth/blockchain/getAllDonationByID', {
+            method: 'POST',
+            body: JSON.stringify({ user_id: id}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        const donation_res_data = await aid_list_res.json()
+        total_donation.innerHTML = donation_res_data.total_donation;
+        donation_res_data.donation_details.map((donation) => {
+            let ul =
+                `<ul>
+                <li>
+                <b>Donation ID</b> => ${donation.details.donation_id} <br>
+                <b>Donation Amount</b> => ${donation.amount} <br>
+                <b>Donor ID</b> => ${donation.donor_id} <br>
+                <b>Block chain entry ID</b> => ${donation.bc_entry_id} <br>
+                <b>Transaction ID</b> => ${donation.details.tnx_id} <br>
+                </li>
+                </ul>`
+            donation_list.innerHTML += ul
+        })
+
+        make_request.innerHTML = `<a href="/donor/${id}/make_donation">Donate</a>`
+    }
+    getUsers()
+</script>
+</body>
+</html>
