@@ -4,50 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Prekkha</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/login">Login</a>
             </div>
         </div>
     </div>
 </nav>
-<h1>Register Page</h1>
-<div>
-    <form>
-        <p>Are you a User or Donor?</p>
-        <div>
-            <input type="radio" name="role" value="user" id="user" required>
-            <label for="user">User</label>
-        </div>
-        <div>
-            <input type="radio" name="role" value="donor" id="donor" required>
-            <label for="donor">Donor</label>
-        </div>
-</div>
 <div class="error" style="background-color: red;"></div>
-<br>
-<label for="username">Username</label><br>
-<input type="text" id="username" required><br>
-<label for="password">Password</label><br>
-<input type="password" id="password" required><br>
-<input type="submit" value="register"><br>
-</form>
-<a href="/login">Already registered? Login</a>
-
+<br><br>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <div class="card text-center" style="width: 1000px; height: 450px">
+        <div class="card-header">
+            Registration
+        </div>
+        <div class="card-body">
+            <div>
+                <form class="row g-3">
+                    <div class="col-md-12">
+                    <p>Are you a User or Donor?</p>
+                    <div>
+                        <input type="radio" name="role" value="user" id="user" required>
+                        <label class="form-label" for="user">User</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="role" value="donor" id="donor" required>
+                        <label class="form-label" for="donor">Donor</label>
+                    </div>
+                    </div>
+                    <br>
+                    <div class="col-md-6">
+                    <label class="form-label" for="username">Username</label><br>
+                    <input class="form-control" type="text" id="username" required><br>
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label" for="password">Password</label><br>
+                    <input class="form-control" type="password" id="password" required><br>
+                    </div>
+                    <div class="col-md-12">
+                    <input class="btn btn-primary" type="submit" value="Register"><br>
+                    </div>
+                </form>
+                <br>
+                <a href="/login">Already registered? Login</a>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            Prekkha is a Blockchain based system
+        </div>
+    </div>
+</div>
 <script>
     const form = document.querySelector('form')
     const username = document.querySelector('#username')

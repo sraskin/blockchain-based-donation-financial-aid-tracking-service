@@ -21,23 +21,43 @@
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/register">Registration</a>
             </div>
         </div>
     </div>
 </nav>
-<h1>Login Page</h1>
-<form>
-    <div class="error" style="background-color: red;"></div>
-    <br>
-    <label for="username">Username</label><br>
-    <input type="text" id="username" required/><br>
-    <label for="password">Password</label><br>
-    <input type="password" id="password" required><br>
-    <input type="submit" value="login"><br>
-</form>
-<a href="/register">Don't have an accout? Register</a>
-
+<br><br>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <div class="card text-center" style="width: 1000px; height: 380px">
+        <div class="card-header">
+            Login
+        </div>
+        <div class="card-body">
+            <div>
+                <form class="row g-3">
+                    <p>Please input your registered username and password</p>
+                    <br>
+                    <div class="col-md-6">
+                        <label class="form-label" for="username">Username</label><br>
+                        <input class="form-control" type="text" id="username" required><br>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="password">Password</label><br>
+                        <input class="form-control" type="password" id="password" required><br>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="btn btn-primary" type="submit" value="Login"><br>
+                    </div>
+                </form>
+                <br>
+                <a href="/register">Don't have an account? Register</a>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            Prekkha is a Blockchain based system
+        </div>
+    </div>
+</div>
 <script>
     const form = document.querySelector('form')
     const username = document.querySelector('#username')
