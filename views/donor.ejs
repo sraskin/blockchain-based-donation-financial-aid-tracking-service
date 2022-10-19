@@ -19,20 +19,20 @@
 <br><br><br>
 <button id="make_request"></button>
 <br><br><br>
-<button class="logout"> <a href="/logout">Log Out</a></button>
+<button class="logout"><a href="/logout">Log Out</a></button>
 <script>
     const user_details = document.querySelector('#user_details');
     const donation_list = document.querySelector('#donation_list');
     const make_request = document.querySelector('#make_request');
     const total_donation = document.querySelector('#total_donation');
-    const getUsers = async() => {
+    const getUsers = async () => {
         const current_url = window.location.href;
         const id = current_url.split('/')[4];
         console.log(id);
         const res = await fetch('/api/auth/blockchain/getUserByID', {
             method: 'POST',
-            body: JSON.stringify({ user_id: id}),
-            headers: { 'Content-Type': 'application/json' }
+            body: JSON.stringify({user_id: id}),
+            headers: {'Content-Type': 'application/json'}
         })
         const data = await res.json()
         let li = `
@@ -46,8 +46,8 @@
 
         const aid_list_res = await fetch('/api/auth/blockchain/getAllDonationByID', {
             method: 'POST',
-            body: JSON.stringify({ user_id: id}),
-            headers: { 'Content-Type': 'application/json' }
+            body: JSON.stringify({user_id: id}),
+            headers: {'Content-Type': 'application/json'}
         })
         const donation_res_data = await aid_list_res.json()
         total_donation.innerHTML = donation_res_data.total_donation;

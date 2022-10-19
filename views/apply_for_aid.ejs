@@ -7,8 +7,9 @@
 </head>
 <body>
 <h1>Aid Request Page</h1>
-<form >
-    <div class="error" style="background-color: red;"></div><br>
+<form>
+    <div class="error" style="background-color: red;"></div>
+    <br>
     <label for="bank_name">Bank Name</label><br>
     <input type="text" id="bank_name" required/><br>
     <label for="bank_account">Bank Account</label><br>
@@ -42,14 +43,21 @@
         try {
             const res = await fetch('/api/auth/user/aid', {
                 method: 'POST',
-                body: JSON.stringify({user_id:id, bank_name:bank_name.value, bank_account:bank_account.value, amount:amount.value, authorizer_name:authorizer_name.value, authorizer_phone:authorizer_phone.value}),
-                headers: { 'Content-Type': 'application/json' }
+                body: JSON.stringify({
+                    user_id: id,
+                    bank_name: bank_name.value,
+                    bank_account: bank_account.value,
+                    amount: amount.value,
+                    authorizer_name: authorizer_name.value,
+                    authorizer_phone: authorizer_phone.value
+                }),
+                headers: {'Content-Type': 'application/json'}
             })
             const data = await res.json()
             const bc_call = await fetch('/api/auth/blockchain/makeAidRequest', {
                 method: 'POST',
-                body: JSON.stringify({aid_id:data.id, amount:data.amount, details:data.aid_details}),
-                headers: { 'Content-Type': 'application/json' }
+                body: JSON.stringify({aid_id: data.id, amount: data.amount, details: data.aid_details}),
+                headers: {'Content-Type': 'application/json'}
             })
             console.log(await bc_call.json());
             if (res.status === 201) {

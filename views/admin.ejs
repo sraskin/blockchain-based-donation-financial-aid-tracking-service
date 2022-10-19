@@ -28,6 +28,7 @@
     const all_users = document.querySelector('#all_users')
     const all_aid = document.querySelector('#all_aid')
     const all_donations = document.querySelector('#all_donations')
+
     const getUsers = async () => {
         const user_res = await fetch('/api/auth/blockchain/admin/getAllUser')
         const user_data = await user_res.json()
@@ -53,9 +54,9 @@
                 return true;
             };
             let aid_details;
-            if(isJsonString(aid.details)){
+            if (isJsonString(aid.details)) {
                 aid_details = JSON.parse(aid.details);
-            }else {
+            } else {
                 aid_details = aid.details;
             }
 
@@ -100,8 +101,8 @@
                                 <h3>Available Balance in Blockchain Ledger: ${get_main_balance_data.main_balance}</h3>
                                 <h3>Total Users: ${user_data.users.length}</h3>
                                 <h3>Total Aid Request: ${aid_data.beneficiary.length}</h3>
-                                <h3>Total Donors: ${donation_data.donation_details.length}</h3>
-                                <h3>Total Donations: ${donation_data.total_donation}</h3>
+                                <h3>Total Number of donations: ${donation_data.donation_details.length}</h3>
+                                <h3>Total Donated Amount: ${donation_data.total_donation}</h3>
                                 `
     }
     getUsers()
@@ -117,7 +118,7 @@
                 alert('Aid Request approved successfully')
                 window.location.reload()
             } else {
-                alert('Something went wrong')
+                alert(`Insufficient Balance available in Blockchain Ledger.`)
             }
         }
     };

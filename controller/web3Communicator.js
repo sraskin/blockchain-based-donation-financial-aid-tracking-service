@@ -71,20 +71,25 @@ exports.getAllDonationByID = async (req, res, next) => {
     const instance = await getInstance();
     await Donation.find({user_id: user_id, bc_entry_id: {$ne: null}})
         .then(async (user) => {
-            const donation= [];
+            const donation = [];
             let total_donation = 0;
             user.map(async (item) => {
                 const _donation = await instance.donations(item.bc_entry_id);
                 total_donation += _donation.amount.toNumber();
-                donation.push({bc_entry_id: _donation.id, donor_id: _donation.donor_id, amount: _donation.amount.toNumber(), details: JSON.parse(_donation.donation_details)});
+                donation.push({
+                    bc_entry_id: _donation.id,
+                    donor_id: _donation.donor_id,
+                    amount: _donation.amount.toNumber(),
+                    details: JSON.parse(_donation.donation_details)
+                });
             })
             const donation_list = () => {
                 if (donation.length === user.length) {
-                    res.status(200).json({donation_details:donation, total_donation: total_donation});
+                    res.status(200).json({donation_details: donation, total_donation: total_donation});
                 } else {
                     setTimeout(function () {
                         if (donation.length === user.length) {
-                            res.status(200).json({donation_details:donation, total_donation: total_donation});
+                            res.status(200).json({donation_details: donation, total_donation: total_donation});
                         } else {
                             donation_list()
                         }
@@ -119,7 +124,13 @@ exports.getAllAidByID = async (req, res, next) => {
             user.map(async (item) => {
                 const _aid = await instance.beneficiaries(item.bc_entry_id);
                 // console.log("aid",_aid);
-                beneficiary.push({bc_entry_id: _aid.id, aid_id: _aid.beneficiary_id, amount: _aid.amount.toNumber(), details: _aid.beneficiary_details, status: _aid.status === false ? 'Pending' : 'Accepted'});
+                beneficiary.push({
+                    bc_entry_id: _aid.id,
+                    aid_id: _aid.beneficiary_id,
+                    amount: _aid.amount.toNumber(),
+                    details: _aid.beneficiary_details,
+                    status: _aid.status === false ? 'Pending' : 'Accepted'
+                });
             })
             const aid_list = () => {
                 if (beneficiary.length === user.length) {
@@ -147,7 +158,13 @@ exports.getAllAid = async (req, res, next) => {
             aid.map(async (item) => {
                 const _aid = await instance.beneficiaries(item.bc_entry_id);
                 // console.log("aid",_aid);
-                beneficiary.push({bc_entry_id: _aid.id, aid_id: _aid.beneficiary_id, amount: _aid.amount.toNumber(), details: _aid.beneficiary_details, status: _aid.status === false ? 'Pending' : 'Approved'});
+                beneficiary.push({
+                    bc_entry_id: _aid.id,
+                    aid_id: _aid.beneficiary_id,
+                    amount: _aid.amount.toNumber(),
+                    details: _aid.beneficiary_details,
+                    status: _aid.status === false ? 'Pending' : 'Approved'
+                });
             })
             const aid_list = () => {
                 if (beneficiary.length === aid.length) {
@@ -170,20 +187,25 @@ exports.getAllDonation = async (req, res, next) => {
     const instance = await getInstance();
     await Donation.find({bc_entry_id: {$ne: null}})
         .then(async (donation_details) => {
-            const donation= [];
+            const donation = [];
             let total_donation = 0;
             donation_details.map(async (item) => {
                 const _donation = await instance.donations(item.bc_entry_id);
                 total_donation += _donation.amount.toNumber();
-                donation.push({bc_entry_id: _donation.id, donor_id: _donation.donor_id, amount: _donation.amount.toNumber(), details: JSON.parse(_donation.donation_details)});
+                donation.push({
+                    bc_entry_id: _donation.id,
+                    donor_id: _donation.donor_id,
+                    amount: _donation.amount.toNumber(),
+                    details: JSON.parse(_donation.donation_details)
+                });
             })
             const donation_list = () => {
                 if (donation.length === donation_details.length) {
-                    res.status(200).json({donation_details:donation, total_donation: total_donation});
+                    res.status(200).json({donation_details: donation, total_donation: total_donation});
                 } else {
                     setTimeout(function () {
                         if (donation.length === donation_details.length) {
-                            res.status(200).json({donation_details:donation, total_donation: total_donation});
+                            res.status(200).json({donation_details: donation, total_donation: total_donation});
                         } else {
                             donation_list()
                         }
@@ -201,7 +223,12 @@ exports.getAllUser = async (req, res, next) => {
             const users = [];
             user.map(async (item) => {
                 const _user = await instance.users(item.bc_entry_id);
-                users.push({bc_entry_id: _user.id, user_id: _user.user_id, role: _user.user_type, other_details: {user_name: _user.user_details}});
+                users.push({
+                    bc_entry_id: _user.id,
+                    user_id: _user.user_id,
+                    role: _user.user_type,
+                    other_details: {user_name: _user.user_details}
+                });
             })
             const user_list = () => {
                 if (users.length === user.length) {
@@ -226,6 +253,6 @@ exports.approveDonation = async (req, res, next) => {
     await instance.approveBeneficiary(bc_entry_id, {from: `${wallet_id}`}).then(async (arg, tt) => {
         let data = arg.logs[0].args;
         console.log(data);
-        res.status(200).json({data:data ,status: data.status === false ? 'Pending' : 'Approved'});
+        res.status(200).json({data: data, status: data.status === false ? 'Pending' : 'Approved'});
     })
 }

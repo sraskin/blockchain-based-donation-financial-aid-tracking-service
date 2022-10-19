@@ -7,11 +7,13 @@
 </head>
 <body>
 <h1>Make donation Page</h1>
-<p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and submit the transaction id to verify the donation </p>
+<p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and
+    submit the transaction id to verify the donation </p>
 <br>
 <br>
-<form >
-    <div class="error" style="background-color: red;"></div><br>
+<form>
+    <div class="error" style="background-color: red;"></div>
+    <br>
     <label for="transaction_id">Transaction ID</label><br>
     <input type="text" id="transaction_id" required><br>
     <input type="submit" value="Donate"><br>
@@ -36,16 +38,16 @@
         try {
             const res = await fetch('/api/auth/donor/donation', {
                 method: 'POST',
-                body: JSON.stringify({user_id:id, tnx_id:transaction_id.value}),
-                headers: { 'Content-Type': 'application/json' }
+                body: JSON.stringify({user_id: id, tnx_id: transaction_id.value}),
+                headers: {'Content-Type': 'application/json'}
             })
             const data = await res.json()
             console.log(data);
-            if(res.status === 201){
+            if (res.status === 201) {
                 const bc_call = await fetch('/api/auth/blockchain/makeDonation', {
                     method: 'POST',
-                    body: JSON.stringify({donation_id:data.donation_id, amount:data.amount, details:data} ),
-                    headers: { 'Content-Type': 'application/json' }
+                    body: JSON.stringify({donation_id: data.donation_id, amount: data.amount, details: data}),
+                    headers: {'Content-Type': 'application/json'}
                 })
                 console.log(await bc_call.json());
                 if (res.status === 201) {
@@ -54,7 +56,7 @@
                 } else {
                     display.textContent = `<span>${data.message} <br> ${data.error}</span>`
                 }
-            }else {
+            } else {
                 display.textContent = `${data.message} || ${data.error}`
             }
         } catch (err) {

@@ -8,8 +8,9 @@
 <body>
 <h1>Dummy Internet Banking Site</h1>
 <br><br><br>
-<form >
-    <div class="error" style="background-color: red;"></div><br>
+<form>
+    <div class="error" style="background-color: red;"></div>
+    <br>
     <label for="account_number">Bank Account Number</label><br>
     <input type="text" id="account_number" required><br>
     <label for="bank_name">Bank Name</label><br>
@@ -35,8 +36,12 @@
         try {
             const res = await fetch('/api/auth/bank', {
                 method: 'POST',
-                body: JSON.stringify({bank_name: bank_name.value, bank_account: account_number.value, amount: +amount.value}),
-                headers: { 'Content-Type': 'application/json' }
+                body: JSON.stringify({
+                    bank_name: bank_name.value,
+                    bank_account: account_number.value,
+                    amount: +amount.value
+                }),
+                headers: {'Content-Type': 'application/json'}
             })
             const data = await res.json()
             console.log(data);
