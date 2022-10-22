@@ -2,7 +2,7 @@ const Beneficiary = require("../model/Beneficiary");
 const User = require("../model/User");
 
 exports.make_financial_aid_request = async (req, res, next) => {
-    const {user_id, bank_name, bank_account, amount, authorizer_name, authorizer_phone} = req.body;
+    const {user_id, bank_name, bank_account, amount, authorizer_name, authorizer_phone, purpose, donation_description} = req.body;
     await User.findById(user_id)
         .then(async (user) => {
             await Beneficiary.create({
@@ -12,7 +12,9 @@ exports.make_financial_aid_request = async (req, res, next) => {
                 bank_account: bank_account,
                 amount: +amount,
                 authorizer_name: authorizer_name,
-                authorizer_phone: authorizer_phone
+                authorizer_phone: authorizer_phone,
+                purpose: purpose,
+                details: donation_description,
             })
                 .then(async (aid) => {
                     res.status(201).json({

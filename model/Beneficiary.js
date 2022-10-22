@@ -33,6 +33,16 @@ const BeneficiarySchema = new Mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    purpose: {
+        type: String,
+        default: false,
+        required: true,
+    },
+    details: {
+        type: String,
+        default: false,
+        required: true,
+    },
     bc_entry_id: {
         type: Number,
         default: null,

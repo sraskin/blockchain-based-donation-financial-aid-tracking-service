@@ -188,6 +188,7 @@ exports.getAllDonation = async (req, res, next) => {
     await Donation.find({bc_entry_id: {$ne: null}})
         .then(async (donation_details) => {
             const donation = [];
+            const active_donors = [];
             let total_donation = 0;
             donation_details.map(async (item) => {
                 const _donation = await instance.donations(item.bc_entry_id);
@@ -198,14 +199,17 @@ exports.getAllDonation = async (req, res, next) => {
                     amount: _donation.amount.toNumber(),
                     details: JSON.parse(_donation.donation_details)
                 });
+                active_donors.push(_donation.donor_id);
             })
             const donation_list = () => {
                 if (donation.length === donation_details.length) {
-                    res.status(200).json({donation_details: donation, total_donation: total_donation});
+                    let _active_donors = [...new Set(active_donors)];
+                    res.status(200).json({donation_details: donation, total_donation: total_donation, active_donors: _active_donors.length});
                 } else {
                     setTimeout(function () {
                         if (donation.length === donation_details.length) {
-                            res.status(200).json({donation_details: donation, total_donation: total_donation});
+                            let _active_donors = [...new Set(active_donors)];
+                            res.status(200).json({donation_details: donation, total_donation: total_donation, active_donors: _active_donors.length});
                         } else {
                             donation_list()
                         }

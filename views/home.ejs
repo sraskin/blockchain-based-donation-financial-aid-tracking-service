@@ -20,7 +20,7 @@
     </div>
 </nav>
 <br><br>
-<div class="position-absolute top-50 start-50 translate-middle">
+<div class="position-absolute top-30 start-50 translate-middle-x">
     <div class="card text-center" style="width: 1000px; height: 300px">
         <div class="card-header">
             <h1>Welcome to Prekkha!</h1>
@@ -32,9 +32,39 @@
             <a href="/login" class="btn btn-info" style="width: 150px;">Login</a>
         </div>
         <div class="card-footer text-muted">
-            Prekkha is a Blockchain based system
+            Prekkha: A national donation platform using blockchain for Tracking Trust and Transparency
         </div>
     </div>
 </div>
+<div class="position-absolute bottom-0 start-50 translate-middle-x">
+<div class="row" style="width: 800px">
+    <div class="col-sm-6">
+        <div class="card text-dark bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Active Donors: <span id="active_donor" class="card-text"></span></h5>
+                <a href="/register" class="link-dark">Donate now!</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Donation Received: <span id="total_donation" class="card-text"></span> BDT</h5>
+                <a href="/register" class="link-dark">Apply for a financial now!</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    const active_donor = document.getElementById('active_donor');
+    const total_donation = document.getElementById('total_donation');
+    (getUsers = async () => {
+        const fetch_all_donation_res = await fetch('/api/auth/blockchain/admin/getAllDonation')
+        const fetch_all_donation_res_data = await fetch_all_donation_res.json()
+        active_donor.innerHTML = fetch_all_donation_res_data.active_donors;
+        total_donation.innerHTML = fetch_all_donation_res_data.total_donation;
+    })();
+</script>
 </body>
 </html>

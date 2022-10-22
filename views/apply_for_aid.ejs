@@ -20,29 +20,73 @@
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/logout">Logout</a>
             </div>
         </div>
     </div>
 </nav>
-<h1>Aid Request Page</h1>
-<form>
-    <div class="error" style="background-color: red;"></div>
-    <br>
-    <label for="bank_name">Bank Name</label><br>
-    <input type="text" id="bank_name" required/><br>
-    <label for="bank_account">Bank Account</label><br>
-    <input type="text" id="bank_account" required/><br>
-    <label for="amount">Amount</label><br>
-    <input type="text" id="amount" required><br>
-    <label for="authorizer_name">Authorizer Name</label><br>
-    <input type="text" id="authorizer_name" required><br>
-    <label for="authorizer_phone">Authorizer Phone</label><br>
-    <input type="text" id="authorizer_phone" required><br>
-    <input type="submit" value="Request"><br>
-</form>
-<br><br>
-<div id="status"></div>
+<div class="error" style="background-color: red;"></div>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <div class="card text-center" style="width: 1000px; height: 450px">
+        <div class="card-header">
+            <h2>Aid Request</h2>
+        </div>
+        <div class="card-body">
+            <div>
+                <form class="row g-3">
+                    <div class="col-md-12">
+                        <p>Choose your Purpose</p>
+                        <div>
+                            <input type="radio" name="purpose" value="education" id="education" required>
+                            <label class="form-label" for="education">Education Aid</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="purpose" value="medical" id="medical" required>
+                            <label class="form-label" for="medical">Medical Aid</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="purpose" value="orphanage" id="orphanage" required>
+                            <label class="form-label" for="orphanage">Orphanage</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-md-6">
+                        <label class="form-label" for="bank_name">Bank Name</label><br>
+                        <input class="form-control" type="text" id="bank_name" required/><br>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="bank_account">Bank Account Number</label><br>
+                        <input class="form-control"type="text" id="bank_account" required/><br>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="amount">Amount</label><br>
+                        <input class="form-control" type="text" id="amount" required><br>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="authorizer_name">Authorizer Name</label><br>
+                        <input class="form-control" type="text" id="authorizer_name" required><br>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="authorizer_phone">Authorizer Phone</label><br>
+                        <input class="form-control" type="text" id="authorizer_phone" required><br>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Leave a comment here" id="donation_description" style="height: 100px" required></textarea>
+                            <label for="donation_description">Write a details about your need</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="btn btn-primary" type="submit" value="Request"><br>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <div id="status"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     const current_url = window.location.href;
@@ -53,12 +97,21 @@
     const amount = document.querySelector('#amount')
     const authorizer_name = document.querySelector('#authorizer_name')
     const authorizer_phone = document.querySelector('#authorizer_phone')
+    const donation_description = document.querySelector('#donation_description')
+    const purposes = document.querySelectorAll('input[name="purpose"]');
     const status = document.querySelector('#status')
     const display = document.querySelector('.error')
     status.innerHTML = `<a href="/user/${id}">Go Back</a></p>`
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
         display.textContent = ''
+        let selectedPurpose;
+        for (const purpose of purposes) {
+            if (purpose.checked) {
+                selectedPurpose = purpose.value;
+                break;
+            }
+        }
         try {
             const res = await fetch('/api/auth/user/aid', {
                 method: 'POST',
@@ -68,7 +121,9 @@
                     bank_account: bank_account.value,
                     amount: amount.value,
                     authorizer_name: authorizer_name.value,
-                    authorizer_phone: authorizer_phone.value
+                    authorizer_phone: authorizer_phone.value,
+                    donation_description: donation_description.value,
+                    purpose: selectedPurpose
                 }),
                 headers: {'Content-Type': 'application/json'}
             })
