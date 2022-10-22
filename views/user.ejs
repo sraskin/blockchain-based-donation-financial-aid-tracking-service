@@ -44,7 +44,6 @@
         </div>
     </div>
 </div>
-
 <script>
     const user_details = document.querySelector('#user_details');
     const applied_aid_list = document.querySelector('#applied_aid_list');
@@ -82,7 +81,7 @@
                 _parsed_aid_details = aid.details
             }
             let div = `
-<div class="col-sm-3">
+        <div class="col-sm-3">
         <div class="card card border-primary mb-3" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title" style="text-transform: capitalize">Purpose: ${_parsed_aid_details.purpose}</h5>
@@ -98,7 +97,8 @@
                 <b>Status:</b> ${aid.status}
             </div>
         </div>
-    </div>`
+    </div>
+`
             applied_aid_list.innerHTML += div;
         })
         make_request.innerHTML += `<li class="nav-item"><a class="nav-link active" aria-current="page" href="/user/${id}/make_request">Make Aid Request</a></li>`

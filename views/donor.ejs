@@ -5,45 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Prekkha</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/logout">Logout</a>
             </div>
         </div>
     </div>
 </nav>
-<h1>Total Donated: <i id="total_donation">0</i></h1>
-<p>Donor Details</p>
-<ul id="user_details"></ul>
-<br>
-<p>Donation List</p>
-<div id="donation_list">
+<br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
+                        <div class="card-header">
+                            <b>Donor Details</b>
+                        </div>
+                        <ul id="user_details" class="list-group list-group-flush"></ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
+                        <div class="card-header">
+                            <b>Total Donated Amount</b>
+                        </div>
+                        <ul id="user_details" class="list-group list-group-flush">
+                            <li class="list-group-item">BDT <i id="total_donation">0</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <br><br>
+            <h3>Donation List</h3>
+            <div class="row" id="donation_list"></div>
+        </div>
+    </div>
 </div>
-
-
-<br><br><br>
-<button id="make_request"></button>
-<br><br><br>
-<button class="logout"><a href="/logout">Log Out</a></button>
 <script>
     const user_details = document.querySelector('#user_details');
     const donation_list = document.querySelector('#donation_list');
-    const make_request = document.querySelector('#make_request');
     const total_donation = document.querySelector('#total_donation');
+    const navbar = document.querySelector('#navbar');
     const getUsers = async () => {
         const current_url = window.location.href;
         const id = current_url.split('/')[4];
@@ -55,12 +76,11 @@
         })
         const data = await res.json()
         let li = `
-                <li>
-                <b>Donor name</b> => ${data.username} <br>
-                <b>Role</b> => ${data.role} <br>
-                <b>ID</b> => ${data.user_id} <br>
-                <b> Blockchain Entry ID</b> => ${data.blockchain_entry_id} <br>
-                </li>`
+                  <li class="list-group-item"><b>Username:</b> ${data.username}</li>
+                  <li class="list-group-item"><b>Role:</b> ${data.role}</li>
+                  <li class="list-group-item"><b>User ID:</b> ${data.user_id}</li>
+                  <li class="list-group-item"><b>Blockchain Entry ID:</b>${data.blockchain_entry_id}</li>
+               `
         user_details.innerHTML = li
 
         const aid_list_res = await fetch('/api/auth/blockchain/getAllDonationByID', {
@@ -71,20 +91,26 @@
         const donation_res_data = await aid_list_res.json()
         total_donation.innerHTML = donation_res_data.total_donation;
         donation_res_data.donation_details.map((donation) => {
-            let ul =
-                `<ul>
-                <li>
-                <b>Donation ID</b> => ${donation.details.donation_id} <br>
-                <b>Donation Amount</b> => ${donation.amount} <br>
-                <b>Donor ID</b> => ${donation.donor_id} <br>
-                <b>Block chain entry ID</b> => ${donation.bc_entry_id} <br>
-                <b>Transaction ID</b> => ${donation.details.tnx_id} <br>
-                </li>
-                </ul>`
-            donation_list.innerHTML += ul
-        })
+            let div =
+                `
+        <div class="col-sm-3">
+        <div class="card card border-primary mb-3" style="width: 18rem;">
 
-        make_request.innerHTML = `<a href="/donor/${id}/make_donation">Donate</a>`
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Donation ID:</b> ${donation.details.donation_id}</li>
+                <li class="list-group-item"><b>Donor ID:</b> ${donation.donor_id}</li>
+                <li class="list-group-item"><b>Blockchain Entry ID:</b> ${donation.bc_entry_id}</li>
+                <li class="list-group-item"><b>Transaction ID:</b> ${donation.details.tnx_id}</li>
+            </ul>
+            <div class="card-body">
+                <b>Amount:</b> ${donation.amount}
+            </div>
+        </div>
+    </div>
+`
+            donation_list.innerHTML += div
+        })
+        navbar.innerHTML += `<li class="nav-item"><a class="nav-link active" aria-current="page" href="/donor/${id}/make_donation">Donate</a></li>`
     }
     getUsers()
 </script>
