@@ -16,31 +16,41 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/logout">Logout</a>
             </div>
         </div>
     </div>
 </nav>
-<h1>Make donation Page</h1>
-<p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and
-    submit the transaction id to verify the donation </p>
-<br>
-<br>
-<form>
-    <div class="error" style="background-color: red;"></div>
-    <br>
-    <label for="transaction_id">Transaction ID</label><br>
-    <input type="text" id="transaction_id" required><br>
-    <input type="submit" value="Donate"><br>
-</form>
-<br><br>
-
-<br><br>
-<div id="status"></div>
+<div class="error" style="background-color: red;"></div>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <div class="card text-center" style="width: 1000px; height: 450px">
+        <div class="card-header">
+            <h2>Make donation</h2>
+        </div>
+        <div class="card-body">
+            <div>
+                <form class="row g-3">
+                    <div class="col-md-12">
+                        <label class="form-label" for="transaction_id">Transaction ID</label><br>
+                        <input class="form-control" type="text" id="transaction_id" required><br>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="btn btn-primary" type="submit" value="Verify the transaction"><br>
+                    </div>
+                </form>
+                <div id="status"></div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and
+                submit the transaction id here to verify the donation. <a href="/Bank">Click here</a> to open Dummy Bank Internet banking website. </p>
+        </div>
+    </div>
+</div>
 
 <script>
     const current_url = window.location.href;
@@ -71,7 +81,7 @@
                 console.log(await bc_call.json());
                 if (res.status === 201) {
                     form.innerHTML = ''
-                    status.innerHTML = `<p>Donation Successfully made</p><br><p><a href="/donor/${id}">Go Back</a></p>`
+                    status.innerHTML = `<h3>Donation Successfully made!</h3><br><p><a href="/donor/${id}">Go Back</a></p>`
                 } else {
                     display.textContent = `<span>${data.message} <br> ${data.error}</span>`
                 }

@@ -29,6 +29,7 @@ const DonationSchema = new Mongoose.Schema({
     bc_entry_id: {
         type: Number,
         default: null,
+        unique: true,
         required: false,
     },
 });

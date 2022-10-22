@@ -18,28 +18,39 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
             </ul>
             <div class="d-flex">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <a class="btn btn-outline-success" href="/logout">Logout</a>
             </div>
         </div>
     </div>
 </nav>
 <div class="display" style="background-color: red;"></div>
-<h2>All Users</h2>
-<div id="all_users"></div>
+<div class="raw" style="margin-left: 10%">
+    <br>
+    <div class="col-md-12">
+        <h4>All Financial Aid Requests</h4>
+        <div class="row" id="all_aid">
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="col-md-12">
+        <h4>All Donors</h4>
+        <div class="row" id="all_donations"></div>
+    </div>
+    <br><br>
+    <div class="col-md-12">
+        <h4>All users</h4>
+        <div class="row" id="all_users"></div>
+    </div>
+</div>
 <br>
-<h2>All Financial Aid Requests</h2>
-<div id="all_aid"></div>
 <br>
-<h2>All Donations</h2>
-<div id="all_donations"></div>
-<br>
-<div id="total_details"></div>
+<div id="total_details" style="margin-left: 10%"></div>
 <br><br>
-<button class="logout"><a href="/logout">Log Out</a></button>
 <script>
     const display = document.querySelector('.display')
     const total_details = document.querySelector('#total_details')
@@ -52,11 +63,15 @@
         const user_data = await user_res.json()
         user_data.users.map(user => {
             const ul = `
-                        <li>User Name: ${user.other_details.user_name}</li>
-                        <li>User ID: ${user.user_id}</li>
-                        <li>Role: ${user.role}</li>
-                        <li>Blockchain Entry ID: ${user.bc_entry_id}</li><br>
-                        `
+        <div class="card text-dark col-md-3" style="margin: 5px 5px 5px 5px">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">User Name: ${user.other_details.user_name}</li>
+                <li class="list-group-item">User ID: ${user.user_id}</li>
+                <li class="list-group-item">Role: ${user.role}</li>
+                <li class="list-group-item">Blockchain Entry ID: ${user.bc_entry_id}</li>
+            </ul>
+        </div>
+          `
             all_users.innerHTML += ul
         })
 
@@ -79,18 +94,25 @@
             }
 
             const ul = `
-                        <li>Aid ID: ${aid.aid_id}</li>
-                        <li>Amount: ${aid.amount}</li>
-                        <li>Bank Name: ${aid_details.bank_name}</li>
-                        <li>Bank Account: ${aid_details.bank_account}</li>
-                        <li>Authorizer Name: ${aid_details.authorizer_name}</li>
-                        <li>Authorizer Details: ${aid_details.authorizer_phone}</li>
-                        <li>Beneficiary ID: ${aid_details.user_id}</li>
-                        <li>Beneficiary Blockchain ID: ${aid_details.bc_user_id}</li>
-                        <li>Aid Entry ID in Blockchain: ${aid.bc_entry_id}</li>
-                        <li>Status: ${aid.status}</li><br>
-                        ${aid.status === 'Pending' ? `<button class="approve" onclick="approveDonation(${aid.bc_entry_id})">Approve</button> <br>` : ''}
-                        <br>
+ <div class="card text-dark col-md-3" style="margin: 5px 5px 5px 5px">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b style="text-transform: capitalize">Purpose: ${aid_details.purpose}</b></li>
+                <li class="list-group-item">Aid ID: ${aid.aid_id}</li>
+                <li class="list-group-item">Amount: ${aid.amount}</li>
+                <li class="list-group-item">Bank Name: ${aid_details.bank_name}</li>
+                <li class="list-group-item">Bank Account: ${aid_details.bank_account}</li>
+                <li class="list-group-item">Authorizer Name: ${aid_details.authorizer_name}</li>
+                <li class="list-group-item">Authorizer Name: ${aid_details.authorizer_name}</li>
+                <li class="list-group-item">Authorizer Details: ${aid_details.authorizer_phone}</li>
+                <li class="list-group-item">Beneficiary ID: ${aid_details.user_id}</li>
+                <li class="list-group-item">Beneficiary Blockchain ID: ${aid_details.bc_user_id}</li>
+                <li class="list-group-item">Aid Entry ID in Blockchain: ${aid.bc_entry_id}</li>
+                <li class="list-group-item">Aid Description: ${aid_details.details}</li>
+                <li class="list-group-item">Status: ${aid.status}</li>
+                <li class="list-group-item">${aid.status === 'Pending' ? `<button class="approve btn btn-outline-success" onclick="approveDonation(${aid.bc_entry_id})">Approve</button> <br>` : ''}</li>
+            </ul>
+        </div>
+
                         `
             all_aid.innerHTML += ul
         })
@@ -98,16 +120,19 @@
         const donation_data = await donation_res.json()
         donation_data.donation_details.map(donation => {
             const ul = `
-                        <li>Donor ID: ${donation.donor_id}</li>
-                        <li>Donor Blockchain ID: ${donation.details.bc_user_id}</li>
-                        <li>Donated Amount: ${donation.amount}</li>
-                        <li>Bank Name: ${donation.details.bank_name}</li>
-                        <li>Bank Account: ${donation.details.bank_account}</li>
-                        <li>Donation ID: ${donation.details.donation_id}</li>
-                        <li>Donation Entry ID in Blockchain: ${donation.bc_entry_id}</li>
-                        <li>Beneficiary Blockchain ID: ${donation.bc_user_id}</li>
-                        <li>Transaction ID: ${donation.details.tnx_id}</li>
-                        <br>
+<div class="card text-dark col-md-3" style="margin: 5px 5px 5px 5px">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Donor ID: ${donation.donor_id}</li>
+                <li class="list-group-item">Donor Blockchain ID: ${donation.details.bc_user_id}</li>
+                <li class="list-group-item">Donated Amount: ${donation.amount}</li>
+                <li class="list-group-item">Bank Name: ${donation.details.bank_name}</li>
+                <li class="list-group-item">Bank Account Number: ${donation.details.bank_account}</li>
+                <li class="list-group-item">Donation ID: ${donation.details.donation_id}</li>
+                <li class="list-group-item">Donation Entry ID in Blockchain: ${donation.bc_entry_id}</li>
+                <li class="list-group-item">Beneficiary Blockchain ID: ${donation.bc_user_id}</li>
+                <li class="list-group-item">Transaction ID: ${donation.details.tnx_id}</li>
+            </ul>
+        </div>
                         `
             all_donations.innerHTML += ul
         })

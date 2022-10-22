@@ -80,10 +80,8 @@
                         <input class="btn btn-primary" type="submit" value="Request"><br>
                     </div>
                 </form>
+                <div id="status"></div>
             </div>
-        </div>
-        <div class="card-footer text-muted">
-            <div id="status"></div>
         </div>
     </div>
 </div>
@@ -136,7 +134,7 @@
             console.log(await bc_call.json());
             if (res.status === 201) {
                 form.innerHTML = ''
-                status.innerHTML = `<p>Aid Request Created</p><br><p><a href="/user/${id}">Go Back</a></p>`
+                status.innerHTML = `<h3>Aid Request Created!</h3><br><p><a href="/user/${id}">Go Back</a></p>`
             } else {
                 display.textContent = data.message
             }
