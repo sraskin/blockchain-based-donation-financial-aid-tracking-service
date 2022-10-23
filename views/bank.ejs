@@ -59,7 +59,6 @@
     const account_number = document.querySelector('#account_number')
     const bank_name = document.querySelector('#bank_name')
     const amount = document.querySelector('#amount')
-    status.innerHTML = `<a href="/">Go Back</a></p>`
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
         display.textContent = ''
@@ -76,7 +75,7 @@
             const data = await res.json()
             console.log(data);
             form.innerHTML = ''
-            status.innerHTML = `<h3>Status: ${data.message}!</h3><p><b>Transaction ID:</b> ${data.tnx_id}</p><p>Amount: ${data.amount}</p><p><a href="/">Go Back</a></p>`
+            status.innerHTML = `<h3>Status: ${data.message}!</h3><p><b>Transaction ID:</b> ${data.tnx_id}</p><p>Amount: ${data.amount}</p>`
         } catch (err) {
             console.log(err.message)
         }

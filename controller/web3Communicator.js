@@ -257,7 +257,6 @@ exports.approveDonation = async (req, res, next) => {
     const instance = await getInstance();
     await instance.approveBeneficiary(bc_entry_id, {from: `${wallet_id}`}).then(async (arg, tt) => {
         let data = arg.logs[0].args;
-        console.log(data);
         res.status(200).json({data: data, status: data.status === false ? 'Pending' : 'Approved'});
     })
 }
