@@ -5,7 +5,7 @@ const PrekkhaArtifacts = require("../build/contracts/Prekkha.json");
 const User = require("../model/User");
 const Beneficiary = require("../model/Beneficiary");
 const Donation = require("../model/Donation");
-const wallet_id = '0xAe824D538cd58BB317345fE6b80CBfA72FD27F2d'
+const wallet_id = '0x7a2Fb3F5c14D29C4EdAfCA8eac7DA1bf4bE9fB7D'
 web3.eth.defaultAccount = wallet_id;
 web3.eth.sendTransaction({/* ... */});
 
