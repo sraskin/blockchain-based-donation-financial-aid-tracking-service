@@ -74,12 +74,13 @@
         console.log(aid_list_res_data.beneficiary[0])
 
         aid_list_res_data.beneficiary.map((aid) => {
-            let _parsed_aid_details;
-            try {
-                _parsed_aid_details = JSON.parse(aid.details)
-            } catch (e) {
-                _parsed_aid_details = aid.details
-            }
+            const _parsed_aid_details = JSON.parse(aid.details, (key, value) => {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    return value;
+                }
+            });
             let div = `
         <div class="col-sm-3">
         <div class="card card border-primary mb-3" style="width: 18rem;">

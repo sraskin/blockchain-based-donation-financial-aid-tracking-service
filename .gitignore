@@ -256,7 +256,7 @@ web_modules/
 
 # dotenv environment variables file
 
-.env
+.env.example
 
 .env.test
 
@@ -346,3 +346,5 @@ dist
 /build/*
 /node_modules/*
 
+/.env
+!/.env.example

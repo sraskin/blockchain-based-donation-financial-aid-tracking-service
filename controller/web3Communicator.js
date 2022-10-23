@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Web3 = require("web3");
 const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:8545");
 const contract = require("truffle-contract");
@@ -5,7 +6,7 @@ const PrekkhaArtifacts = require("../build/contracts/Prekkha.json");
 const User = require("../model/User");
 const Beneficiary = require("../model/Beneficiary");
 const Donation = require("../model/Donation");
-const wallet_id = '0x7a2Fb3F5c14D29C4EdAfCA8eac7DA1bf4bE9fB7D'
+const wallet_id = process.env.BC_WALLET_ID;
 web3.eth.defaultAccount = wallet_id;
 web3.eth.sendTransaction({/* ... */});
 
