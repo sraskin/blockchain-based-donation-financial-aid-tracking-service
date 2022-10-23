@@ -6,10 +6,6 @@ contract Prekkha {
     uint public donationCount = 0;
     uint public financialAidRequestCount = 0;
 
-    function updateBalance(uint _newAmount) public {
-        mainBalance = mainBalance + _newAmount;
-    }
-
     struct User {
         uint id;
         string user_id;
@@ -47,6 +43,7 @@ contract Prekkha {
         uint id,
         string donor_id,
         uint amount,
+        uint currentMainBalance,
         string donation_details
     );
 
@@ -63,20 +60,16 @@ contract Prekkha {
         string beneficiary_id,
         uint amount,
         string beneficiary_details,
+        uint currentMainBalance,
         bool status
     );
 
-    constructor() public {
-        makeDonation("testDonorID", 0, "donation details hash");
-        userRegistration("testUserID", "admin", "user details hash");
-        financialAidRequest("beneficiaryID", 500, "beneficiary details hash");
-    }
 
     function makeDonation(string memory _donor_id, uint _amount, string memory _donation_details) public {
         donationCount++;
         donations[donationCount] = Donation(donationCount, _donor_id, _amount, _donation_details);
-        updateBalance(_amount);
-        emit DonationCreated(donationCount, _donor_id, _amount, _donation_details);
+        mainBalance = mainBalance + _amount;
+        emit DonationCreated(donationCount, _donor_id, _amount, mainBalance ,_donation_details);
     }
 
     function userRegistration(string memory _user_id, string memory _user_type, string memory _user_details) public {
@@ -98,6 +91,6 @@ contract Prekkha {
             mainBalance = mainBalance - _beneficiary.amount;
         }
         beneficiaries[_id] = _beneficiary;
-        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, _beneficiary.status);
+        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance ,_beneficiary.status);
     }
 }
