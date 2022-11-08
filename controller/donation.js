@@ -26,7 +26,8 @@ exports.make_donation = async (req, res, next) => {
                                     bank_name: donation.bank_name,
                                     bank_account: donation.bank_account,
                                     amount: donation.amount,
-                                    tnx_id: donation.tnx_id
+                                    tnx_id: donation.tnx_id,
+                                    timestamp: donation.timestamp
                                 });
                             })
                             .catch((error) =>

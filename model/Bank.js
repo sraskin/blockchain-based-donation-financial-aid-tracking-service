@@ -17,6 +17,11 @@ const BankSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    timestamp: {
+        type: Date,
+        required: true,
+        default: Date.now,
+    },
 });
 
 const Bank = Mongoose.model("bank", BankSchema);

@@ -158,13 +158,15 @@ exports.getAllAid = async (req, res, next) => {
             const beneficiary = [];
             aid.map(async (item) => {
                 const _aid = await instance.beneficiaries(item.bc_entry_id);
+                const _parsed_aid = JSON.parse(_aid.beneficiary_details);
                 // console.log("aid",_aid);
                 beneficiary.push({
                     bc_entry_id: _aid.id,
                     aid_id: _aid.beneficiary_id,
                     amount: _aid.amount.toNumber(),
-                    details: _aid.beneficiary_details,
-                    status: _aid.status === false ? 'Pending' : 'Approved'
+                    timestamp: _parsed_aid.timestamp,
+                    details: _parsed_aid,
+                    status: _aid.status === false ? 'Pending' : 'Donated'
                 });
             })
             const aid_list = () => {

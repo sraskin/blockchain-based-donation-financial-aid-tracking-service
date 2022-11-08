@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
@@ -31,41 +32,361 @@
 <br><br>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
-                        <div class="card-header">
-                            <b>Donor Details</b>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
+                                <div class="card-header">
+                                    <b>Donor Details</b>
+                                </div>
+                                <ul id="user_details" class="list-group list-group-flush"></ul>
+                            </div>
                         </div>
-                        <ul id="user_details" class="list-group list-group-flush"></ul>
+                        <div class="col-md-6">
+                            <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
+                                <div class="card-header">
+                                    <b>Total Donated Amount</b>
+                                </div>
+                                <ul id="user_details" class="list-group list-group-flush">
+                                    <li class="list-group-item">BDT <i id="total_donation">0</i></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
-                        <div class="card-header">
-                            <b>Total Donated Amount</b>
-                        </div>
-                        <ul id="user_details" class="list-group list-group-flush">
-                            <li class="list-group-item">BDT <i id="total_donation">0</i></li>
-                        </ul>
-                    </div>
+                <div class="col-md-12">
+                    <br><br>
+                    <h3>Donation List:</h3>
+                    <div class="row" id="donation_list"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-4">
+            <h3>Applied Aid List:</h3>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="all_aid" autocomplete="off" checked
+                       onchange="">
+                <label class="btn btn-outline-primary" for="all_aid" style="font-size: 8px">All Pending</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="all_paid_aid" autocomplete="off">
+                <label class="btn btn-outline-primary" for="all_paid_aid" style="font-size: 8px">All Paid</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="new_to_old" autocomplete="off">
+                <label class="btn btn-outline-primary" for="new_to_old" style="font-size: 8px">New to Old</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="old_to_new" autocomplete="off">
+                <label class="btn btn-outline-primary" for="old_to_new" style="font-size: 8px">Old to New</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="high_to_low" autocomplete="off">
+                <label class="btn btn-outline-primary" for="high_to_low" style="font-size: 8px">Amount High to
+                    Low</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="low_to_high" autocomplete="off">
+                <label class="btn btn-outline-primary" for="low_to_high" style="font-size: 8px">Amount Low to
+                    High</label>
+            </div>
             <br><br>
-            <h3>Donation List:</h3>
-            <div class="row" id="donation_list"></div>
+            <b><span>Education:</span></b>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">username</th>
+                    <th scope="col">amount</th>
+                    <th scope="col">status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody id="education"></tbody>
+            </table>
+            <b><span>Hospital:</span></b>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">username</th>
+                    <th scope="col">amount</th>
+                    <th scope="col">status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody id="medical"></tbody>
+            </table>
+            <b><span>Orphanage:</span></b>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">username</th>
+                    <th scope="col">amount</th>
+                    <th scope="col">status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody id="orphanage"></tbody>
+            </table>
         </div>
     </div>
+
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
 <script>
     const user_details = document.querySelector('#user_details');
     const donation_list = document.querySelector('#donation_list');
     const total_donation = document.querySelector('#total_donation');
     const navbar = document.querySelector('#navbar');
+    const education = document.querySelector('#education');
+    const medical = document.querySelector('#medical');
+    const orphanage = document.querySelector('#orphanage');
+    const all_aid_filter = document.querySelector('#all_aid');
+    const all_paid_aid_filter = document.querySelector('#all_paid_aid');
+    const new_to_old_filter = document.querySelector('#new_to_old');
+    const old_to_new_filter = document.querySelector('#old_to_new');
+    const high_to_low_filter = document.querySelector('#high_to_low');
+    const low_to_high_filter = document.querySelector('#low_to_high');
+
     const getUsers = async () => {
+        //get all aid list
+        const all_aid_res = await fetch('/api/auth/blockchain/admin/getAllAid')
+        const all_aid = await all_aid_res.json();
+
+        //category wise pending aid list Descending order
+        const all_aid_sorted_desc = all_aid.beneficiary.sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
+
+        const all_educations_aid = all_aid_sorted_desc.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
+        const all_medical_aid = all_aid_sorted_desc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid = all_aid_sorted_desc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+        //category wise paid aid list Descending order
+        const all_paid_educations_aid = all_aid_sorted_desc.filter((education_aid) => education_aid.status === "Donated" && education_aid.details.purpose === "education");
+        const all_paid_medical_aid = all_aid_sorted_desc.filter((medical_aid) => medical_aid.status === "Donated" && medical_aid.details.purpose === "medical");
+        const all_paid_orphanages_aid = all_aid_sorted_desc.filter((orphanage_aid) => orphanage_aid.status === "Donated" && orphanage_aid.details.purpose === "orphanage");
+
+        //category wise pending aid list Ascending order
+        const all_aid_sorted_asc = all_aid.beneficiary.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+
+        const all_educations_aid_asc = all_aid_sorted_asc.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
+        const all_medical_aid_asc = all_aid_sorted_asc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_asc = all_aid_sorted_asc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+
+        //category wise pending aid list amount high to low
+        const all_aid_sorted_amount_high_to_low = all_aid.beneficiary.sort((a, b) => b.amount - a.amount);
+
+        const all_educations_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
+        const all_medical_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+
+        //category wise pending aid list amount low to high
+        const all_aid_sorted_amount_low_to_high = all_aid.beneficiary.sort((a, b) => a.amount - b.amount);
+
+        const all_educations_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
+        const all_medical_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+
+        function all_pending() {
+            education.innerHTML = '';
+            medical.innerHTML = '';
+            orphanage.innerHTML = '';
+            all_educations_aid.forEach((item, index) => {
+                education.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_medical_aid.forEach((item, index) => {
+                medical.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_orphanages_aid.forEach((item, index) => {
+                orphanage.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+        }
+
+        all_pending();
+
+        all_aid_filter.addEventListener('click', () => {
+            all_pending()
+        })
+        new_to_old_filter.addEventListener('click', () => {
+            all_pending()
+        })
+
+        all_paid_aid_filter.addEventListener('click', () => {
+            education.innerHTML = '';
+            medical.innerHTML = '';
+            orphanage.innerHTML = '';
+            all_paid_educations_aid.forEach((item, index) => {
+                education.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                </tr>
+            `
+            });
+            all_paid_medical_aid.forEach((item, index) => {
+                medical.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                </tr>
+            `
+            });
+            all_paid_orphanages_aid.forEach((item, index) => {
+                orphanage.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                </tr>
+            `
+            });
+        });
+
+        old_to_new_filter.addEventListener('click', () => {
+            education.innerHTML = '';
+            medical.innerHTML = '';
+            orphanage.innerHTML = '';
+            all_educations_aid_asc.forEach((item, index) => {
+                education.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_medical_aid_asc.forEach((item, index) => {
+                medical.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_orphanages_aid_asc.forEach((item, index) => {
+                orphanage.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+        });
+
+        high_to_low_filter.addEventListener('click', () => {
+            education.innerHTML = '';
+            medical.innerHTML = '';
+            orphanage.innerHTML = '';
+            all_educations_aid_amount_high_to_low.forEach((item, index) => {
+                education.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_medical_aid_amount_high_to_low.forEach((item, index) => {
+                medical.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_orphanages_aid_amount_high_to_low.forEach((item, index) => {
+                orphanage.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+        });
+
+        low_to_high_filter.addEventListener('click', () => {
+            education.innerHTML = '';
+            medical.innerHTML = '';
+            orphanage.innerHTML = '';
+            all_educations_aid_amount_low_to_high.forEach((item, index) => {
+                education.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_medical_aid_amount_low_to_high.forEach((item, index) => {
+                medical.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+            all_orphanages_aid_amount_low_to_high.forEach((item, index) => {
+                orphanage.innerHTML += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.details.user_name}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.status}</td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                </tr>
+            `
+            });
+        });
+
         const current_url = window.location.href;
         const id = current_url.split('/')[4];
         console.log(id);

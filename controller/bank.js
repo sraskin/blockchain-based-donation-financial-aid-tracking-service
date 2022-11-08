@@ -16,6 +16,7 @@ exports.make_payment = async (req, res, next) => {
                     message: "Payment successfully created",
                     amount: bank.amount,
                     tnx_id: bank.tnx_id,
+                    timestamp: bank.timestamp
                 });
             })
             .catch((error) =>

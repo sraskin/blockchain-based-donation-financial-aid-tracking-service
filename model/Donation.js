@@ -32,6 +32,11 @@ const DonationSchema = new Mongoose.Schema({
         unique: true,
         required: false,
     },
+    timestamp: {
+        type: Date,
+        required: true,
+        default: Date.now,
+    },
 });
 
 const Donation = Mongoose.model("donation", DonationSchema);

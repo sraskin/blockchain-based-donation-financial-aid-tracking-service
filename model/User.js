@@ -29,6 +29,11 @@ const UserSchema = new Mongoose.Schema({
     unique: true,
     required: false,
   },
+  timestamp: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
 });
 
 const User = Mongoose.model("user", UserSchema);

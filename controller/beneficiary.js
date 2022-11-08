@@ -7,6 +7,7 @@ exports.make_financial_aid_request = async (req, res, next) => {
         .then(async (user) => {
             await Beneficiary.create({
                 user_id: user_id,
+                user_name: user.username,
                 bc_user_id: user.bc_entry_id,
                 bank_name: bank_name,
                 bank_account: bank_account,

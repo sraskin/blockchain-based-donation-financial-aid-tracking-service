@@ -5,6 +5,10 @@ const BeneficiarySchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    user_name: {
+        type: String,
+        required: true,
+    },
     bc_user_id: {
         type: String,
         required: true,
@@ -48,6 +52,11 @@ const BeneficiarySchema = new Mongoose.Schema({
         default: null,
         unique: true,
         required: false,
+    },
+    timestamp: {
+        type: Date,
+        required: true,
+        default: Date.now,
     },
 });
 

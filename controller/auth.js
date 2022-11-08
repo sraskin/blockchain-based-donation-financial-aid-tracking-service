@@ -35,6 +35,7 @@ exports.register = async (req, res, next) => {
                         role: user.role,
                         username: user.username,
                         bc_entry_id: user.bc_entry_id,
+                        timestamp: user.timestamp
                     });
                 })
                 .catch((error) =>
