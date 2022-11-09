@@ -71,7 +71,6 @@
             headers: {'Content-Type': 'application/json'}
         })
         const aid_list_res_data = await aid_list_res.json()
-        console.log(aid_list_res_data.beneficiary[0])
 
         aid_list_res_data.beneficiary.map((aid) => {
             const _parsed_aid_details = JSON.parse(aid.details, (key, value) => {
