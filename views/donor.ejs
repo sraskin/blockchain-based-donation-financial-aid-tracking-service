@@ -47,7 +47,7 @@
                         <div class="col-md-6">
                             <div class="card card text-dark bg-info mb-3" style="width: 18rem;">
                                 <div class="card-header">
-                                    <b>Total Donated Amount</b>
+                                    <b>Available Amount</b>
                                 </div>
                                 <ul id="user_details" class="list-group list-group-flush">
                                     <li class="list-group-item">BDT <i id="total_donation">0</i></li>
@@ -69,9 +69,6 @@
                 <input type="radio" class="btn-check" name="btnradio" id="all_aid" autocomplete="off" checked
                        onchange="">
                 <label class="btn btn-outline-primary" for="all_aid" style="font-size: 8px">All Pending</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="all_paid_aid" autocomplete="off">
-                <label class="btn btn-outline-primary" for="all_paid_aid" style="font-size: 8px">All Paid</label>
 
                 <input type="radio" class="btn-check" name="btnradio" id="new_to_old" autocomplete="off">
                 <label class="btn btn-outline-primary" for="new_to_old" style="font-size: 8px">New to Old</label>
@@ -143,7 +140,6 @@
     const medical = document.querySelector('#medical');
     const orphanage = document.querySelector('#orphanage');
     const all_aid_filter = document.querySelector('#all_aid');
-    const all_paid_aid_filter = document.querySelector('#all_paid_aid');
     const new_to_old_filter = document.querySelector('#new_to_old');
     const old_to_new_filter = document.querySelector('#old_to_new');
     const high_to_low_filter = document.querySelector('#high_to_low');
@@ -154,37 +150,52 @@
         const all_aid_res = await fetch('/api/auth/blockchain/admin/getAllAid')
         const all_aid = await all_aid_res.json();
 
+        const current_url = window.location.href;
+        const id = current_url.split('/')[4];
+        console.log(id);
+        const res = await fetch('/api/auth/blockchain/getUserByID', {
+            method: 'POST',
+            body: JSON.stringify({user_id: id}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        const data = await res.json()
+
+        const get_wallet_balance_res = await fetch('/api/auth/getWalletBalance', {
+            method: 'POST',
+            body: JSON.stringify({user_id: data.blockchain_entry_id}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        const wallet_balance = await get_wallet_balance_res.json()
+
+        total_donation.innerHTML = wallet_balance.available_balance;
+
         //category wise pending aid list Descending order
         const all_aid_sorted_desc = all_aid.beneficiary.sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
 
-        const all_educations_aid = all_aid_sorted_desc.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
-        const all_medical_aid = all_aid_sorted_desc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
-        const all_orphanages_aid = all_aid_sorted_desc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
-        //category wise paid aid list Descending order
-        const all_paid_educations_aid = all_aid_sorted_desc.filter((education_aid) => education_aid.status === "Donated" && education_aid.details.purpose === "education");
-        const all_paid_medical_aid = all_aid_sorted_desc.filter((medical_aid) => medical_aid.status === "Donated" && medical_aid.details.purpose === "medical");
-        const all_paid_orphanages_aid = all_aid_sorted_desc.filter((orphanage_aid) => orphanage_aid.status === "Donated" && orphanage_aid.details.purpose === "orphanage");
+        const all_educations_aid = all_aid_sorted_desc.filter((education_aid) => education_aid.status === "Pending" && education_aid.verified === "Verified" && education_aid.details.purpose === "education");
+        const all_medical_aid = all_aid_sorted_desc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.verified === "Verified" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid = all_aid_sorted_desc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.verified === "Verified" && orphanage_aid.details.purpose === "orphanage");
 
         //category wise pending aid list Ascending order
         const all_aid_sorted_asc = all_aid.beneficiary.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
 
-        const all_educations_aid_asc = all_aid_sorted_asc.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
-        const all_medical_aid_asc = all_aid_sorted_asc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
-        const all_orphanages_aid_asc = all_aid_sorted_asc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+        const all_educations_aid_asc = all_aid_sorted_asc.filter((education_aid) => education_aid.status === "Pending" && education_aid.verified === "Verified" && education_aid.details.purpose === "education");
+        const all_medical_aid_asc = all_aid_sorted_asc.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.verified === "Verified" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_asc = all_aid_sorted_asc.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.verified === "Verified" && orphanage_aid.details.purpose === "orphanage");
 
         //category wise pending aid list amount high to low
         const all_aid_sorted_amount_high_to_low = all_aid.beneficiary.sort((a, b) => b.amount - a.amount);
 
-        const all_educations_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
-        const all_medical_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
-        const all_orphanages_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+        const all_educations_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((education_aid) => education_aid.status === "Pending" && education_aid.verified === "Verified" && education_aid.details.purpose === "education");
+        const all_medical_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.verified === "Verified" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_amount_high_to_low = all_aid_sorted_amount_high_to_low.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.verified === "Verified" && orphanage_aid.details.purpose === "orphanage");
 
         //category wise pending aid list amount low to high
         const all_aid_sorted_amount_low_to_high = all_aid.beneficiary.sort((a, b) => a.amount - b.amount);
 
-        const all_educations_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((education_aid) => education_aid.status === "Pending" && education_aid.details.purpose === "education");
-        const all_medical_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.details.purpose === "medical");
-        const all_orphanages_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.details.purpose === "orphanage");
+        const all_educations_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((education_aid) => education_aid.status === "Pending" && education_aid.verified === "Verified" && education_aid.details.purpose === "education");
+        const all_medical_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((medical_aid) => medical_aid.status === "Pending" && medical_aid.verified === "Verified" && medical_aid.details.purpose === "medical");
+        const all_orphanages_aid_amount_low_to_high = all_aid_sorted_amount_low_to_high.filter((orphanage_aid) => orphanage_aid.status === "Pending" && orphanage_aid.verified === "Verified" && orphanage_aid.details.purpose === "orphanage");
 
         function all_pending() {
             education.innerHTML = '';
@@ -197,7 +208,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -208,7 +219,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -219,7 +230,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -234,42 +245,6 @@
             all_pending()
         })
 
-        all_paid_aid_filter.addEventListener('click', () => {
-            education.innerHTML = '';
-            medical.innerHTML = '';
-            orphanage.innerHTML = '';
-            all_paid_educations_aid.forEach((item, index) => {
-                education.innerHTML += `
-                <tr>
-                    <th scope="row">${index + 1}</th>
-                    <td>${item.details.user_name}</td>
-                    <td>${item.amount}</td>
-                    <td>${item.status}</td>
-                </tr>
-            `
-            });
-            all_paid_medical_aid.forEach((item, index) => {
-                medical.innerHTML += `
-                <tr>
-                    <th scope="row">${index + 1}</th>
-                    <td>${item.details.user_name}</td>
-                    <td>${item.amount}</td>
-                    <td>${item.status}</td>
-                </tr>
-            `
-            });
-            all_paid_orphanages_aid.forEach((item, index) => {
-                orphanage.innerHTML += `
-                <tr>
-                    <th scope="row">${index + 1}</th>
-                    <td>${item.details.user_name}</td>
-                    <td>${item.amount}</td>
-                    <td>${item.status}</td>
-                </tr>
-            `
-            });
-        });
-
         old_to_new_filter.addEventListener('click', () => {
             education.innerHTML = '';
             medical.innerHTML = '';
@@ -281,7 +256,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -292,7 +267,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -303,7 +278,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -320,7 +295,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -331,7 +306,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -342,7 +317,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -359,7 +334,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -370,7 +345,7 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
@@ -381,21 +356,12 @@
                     <td>${item.details.user_name}</td>
                     <td>${item.amount}</td>
                     <td>${item.status}</td>
-                    <td><button type="button" class="btn btn-success" style="font-size: 8px"><b>Donate</b></button></td>
+                    <td><button type="button" class="btn btn-success" style="font-size: 8px" onclick="approveDonation(${item.bc_entry_id}, ${data.blockchain_entry_id})"><b>Donate</b></button></td>
                 </tr>
             `
             });
         });
 
-        const current_url = window.location.href;
-        const id = current_url.split('/')[4];
-        console.log(id);
-        const res = await fetch('/api/auth/blockchain/getUserByID', {
-            method: 'POST',
-            body: JSON.stringify({user_id: id}),
-            headers: {'Content-Type': 'application/json'}
-        })
-        const data = await res.json()
         let li = `
                   <li class="list-group-item"><b>Username:</b> ${data.username}</li>
                   <li class="list-group-item"><b>Role:</b> ${data.role}</li>
@@ -410,30 +376,44 @@
             headers: {'Content-Type': 'application/json'}
         })
         const donation_res_data = await aid_list_res.json()
-        total_donation.innerHTML = donation_res_data.total_donation;
         donation_res_data.donation_details.map((donation) => {
             let div =
                 `
-        <div class="col-sm-3">
-        <div class="card card border-primary mb-3" style="width: 18rem;">
-
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>Donation ID:</b> ${donation.details.donation_id}</li>
-                <li class="list-group-item"><b>Donor ID:</b> ${donation.donor_id}</li>
-                <li class="list-group-item"><b>Blockchain Entry ID:</b> ${donation.bc_entry_id}</li>
-                <li class="list-group-item"><b>Transaction ID:</b> ${donation.details.tnx_id}</li>
-            </ul>
-            <div class="card-body">
-                <b>Amount:</b> ${donation.amount}
+        <div class="col-md-4">
+            <div class="card border-primary mb-3" style="width: 18rem;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Donation ID:</b> ${donation.details.donation_id}</li>
+                    <li class="list-group-item"><b>Donor ID:</b> ${donation.donor_id}</li>
+                    <li class="list-group-item"><b>Blockchain Entry ID:</b> ${donation.bc_entry_id}</li>
+                    <li class="list-group-item"><b>Transaction ID:</b> ${donation.details.tnx_id}</li>
+                </ul>
+                <div class="card-body">
+                    <b>Amount:</b> ${donation.amount}
+                </div>
             </div>
         </div>
-    </div>
-`
+        `
             donation_list.innerHTML += div
         })
-        navbar.innerHTML += `<li class="nav-item"><a class="nav-link active" aria-current="page" href="/donor/${id}/make_donation">Donate</a></li>`
+        navbar.innerHTML += `<li class="nav-item"><a class="nav-link active" aria-current="page" href="/donor/${id}/make_donation">Add balanace for donation</a></li>`
     }
     getUsers()
+    const approveDonation = async (bc_entry_id, user_id) => {
+        if (confirm("Are you sure, you want to make this donation?")) {
+            const res = await fetch('/api/auth/blockchain/approveDonation', {
+                method: 'POST',
+                body: JSON.stringify({bc_entry_id: bc_entry_id, user_id: user_id}),
+                headers: {'Content-Type': 'application/json'}
+            })
+            const data = await res.json()
+            if (data.status === 'Donated') {
+                alert('Donation successful')
+                window.location.reload()
+            } else {
+                alert(`Insufficient amount available, please add balance in your account`)
+            }
+        }
+    };
 </script>
 </body>
 </html>

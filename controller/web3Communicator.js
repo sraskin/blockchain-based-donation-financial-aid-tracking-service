@@ -22,6 +22,13 @@ exports.getMainBalance = async (req, res, next) => {
     res.status(200).json({main_balance: main_balance.toNumber()});
 }
 
+exports.getWalletBalance = async (req, res, next) => {
+    const {user_id} = req.body;
+    const instance = await getInstance();
+    const wallet = await instance.wallet(user_id);
+    res.status(200).json({available_balance: wallet.amount.toNumber()});
+}
+
 exports.registration = async (req, res, next) => {
     const {user_id, role, username} = req.body;
     const instance = await getInstance();
@@ -53,12 +60,12 @@ exports.getUserByID = async (req, res, next) => {
 }
 
 exports.makeDonation = async (req, res, next) => {
-    const {donation_id, amount, details} = req.body;
+    const {donor_id, amount, details} = req.body;
     const instance = await getInstance();
-    await instance.makeDonation(donation_id, amount, JSON.stringify(details), {from: `${wallet_id}`}).then(async (arg, tt) => {
+    await instance.makeDonation(donor_id, amount, JSON.stringify(details), {from: `${wallet_id}`}).then(async (arg, tt) => {
         let data = arg.logs[0].args;
         let id = data.id.toNumber();
-        await Donation.findById(donation_id)
+        await Donation.findById(details.donation_id)
             .then((user) => {
                 user.bc_entry_id = id;
                 user.save();
@@ -130,7 +137,8 @@ exports.getAllAidByID = async (req, res, next) => {
                     aid_id: _aid.beneficiary_id,
                     amount: _aid.amount.toNumber(),
                     details: _aid.beneficiary_details,
-                    status: _aid.status === false ? 'Pending' : 'Accepted'
+                    status: _aid.status === false ? 'Pending' : 'Approved',
+                    verified: _aid.verified === false ? 'NotVerified' : 'Verified'
                 });
             })
             const aid_list = () => {
@@ -159,14 +167,14 @@ exports.getAllAid = async (req, res, next) => {
             aid.map(async (item) => {
                 const _aid = await instance.beneficiaries(item.bc_entry_id);
                 const _parsed_aid = JSON.parse(_aid.beneficiary_details);
-                // console.log("aid",_aid);
                 beneficiary.push({
                     bc_entry_id: _aid.id,
                     aid_id: _aid.beneficiary_id,
                     amount: _aid.amount.toNumber(),
                     timestamp: _parsed_aid.timestamp,
                     details: _parsed_aid,
-                    status: _aid.status === false ? 'Pending' : 'Donated'
+                    status: _aid.status === false ? 'Pending' : 'Donated',
+                    verified: _aid.verified === false ? 'NotVerified' : 'Verified'
                 });
             })
             const aid_list = () => {
@@ -207,12 +215,20 @@ exports.getAllDonation = async (req, res, next) => {
             const donation_list = () => {
                 if (donation.length === donation_details.length) {
                     let _active_donors = [...new Set(active_donors)];
-                    res.status(200).json({donation_details: donation, total_donation: total_donation, active_donors: _active_donors.length});
+                    res.status(200).json({
+                        donation_details: donation,
+                        total_donation: total_donation,
+                        active_donors: _active_donors.length
+                    });
                 } else {
                     setTimeout(function () {
                         if (donation.length === donation_details.length) {
                             let _active_donors = [...new Set(active_donors)];
-                            res.status(200).json({donation_details: donation, total_donation: total_donation, active_donors: _active_donors.length});
+                            res.status(200).json({
+                                donation_details: donation,
+                                total_donation: total_donation,
+                                active_donors: _active_donors.length
+                            });
                         } else {
                             donation_list()
                         }
@@ -254,11 +270,35 @@ exports.getAllUser = async (req, res, next) => {
         })
 }
 
-exports.approveDonation = async (req, res, next) => {
+exports.verifyDonation = async (req, res, next) => {
     const {bc_entry_id} = req.body;
     const instance = await getInstance();
-    await instance.approveBeneficiary(bc_entry_id, {from: `${wallet_id}`}).then(async (arg, tt) => {
+    await instance.verifyBeneficiary(bc_entry_id, {from: `${wallet_id}`}).then(async (arg, tt) => {
         let data = arg.logs[0].args;
-        res.status(200).json({data: data, status: data.status === false ? 'Pending' : 'Approved'});
+        res.status(200).json({
+            data: data,
+            status: data.status === false ? 'Pending' : 'Approved',
+            verified: data.verified === false ? 'NotVerified' : 'Verified'
+        });
+    })
+}
+
+exports.approveDonation = async (req, res, next) => {
+    const {bc_entry_id, user_id} = req.body;
+    const instance = await getInstance();
+    await instance.approveFinancialAidRequest(bc_entry_id, user_id, {from: `${wallet_id}`}).then(async (arg, tt) => {
+        try {
+            let data = arg.logs[0].args;
+            res.status(200).json({
+                data: data,
+                status: data.status === false ? 'Pending' : 'Donated',
+                verified: data.verified === false ? 'NotVerified' : 'Verified'
+            });
+        } catch (e) {
+            res.status(502).json({
+                data: e,
+                status: 'Failed'
+            });
+        }
     })
 }

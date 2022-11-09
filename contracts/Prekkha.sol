@@ -15,7 +15,7 @@ contract Prekkha {
 
     struct Donation {
         uint id;
-        string donor_id;
+        uint donor_id;
         uint amount;
         string donation_details;
     }
@@ -26,11 +26,18 @@ contract Prekkha {
         uint amount;
         string beneficiary_details;
         bool status;
+        bool verified;
+    }
+
+    struct Wallet {
+        uint user_id;
+        uint amount;
     }
 
     mapping(uint => User) public users;
     mapping(uint => Donation) public donations;
     mapping(uint => Beneficiary) public beneficiaries;
+    mapping(uint => Wallet) public wallet;
 
     event UserCreated(
         uint id,
@@ -41,9 +48,8 @@ contract Prekkha {
 
     event DonationCreated(
         uint id,
-        string donor_id,
+        uint donor_id,
         uint amount,
-        uint currentMainBalance,
         string donation_details
     );
 
@@ -52,7 +58,8 @@ contract Prekkha {
         string beneficiary_id,
         uint amount,
         string beneficiary_details,
-        bool status
+        bool status,
+        bool verified
     );
 
     event BeneficiaryUpdated(
@@ -61,36 +68,70 @@ contract Prekkha {
         uint amount,
         string beneficiary_details,
         uint currentMainBalance,
-        bool status
+        bool status,
+        bool verified
     );
 
+    event WalletUpdated(
+        uint user_id,
+        uint amount
+    );
 
-    function makeDonation(string memory _donor_id, uint _amount, string memory _donation_details) public {
+    function makeDonation(uint _donor_id, uint _amount, string memory _donation_details) public {
         donationCount++;
         donations[donationCount] = Donation(donationCount, _donor_id, _amount, _donation_details);
         mainBalance = mainBalance + _amount;
-        emit DonationCreated(donationCount, _donor_id, _amount, mainBalance ,_donation_details);
+        emit DonationCreated(donationCount, _donor_id, _amount, _donation_details);
+        updateWalletBalance(_donor_id, _amount);
     }
 
     function userRegistration(string memory _user_id, string memory _user_type, string memory _user_details) public {
         userCount++;
         users[userCount] = User(userCount, _user_id, _user_type, _user_details);
+        wallet[userCount] = Wallet(userCount, 0);
         emit UserCreated(userCount, _user_id, _user_type, _user_details);
     }
 
-    function financialAidRequest(string memory _beneficiary_id, uint _amount,  string memory _beneficiary_details) public {
+    function financialAidRequest(string memory _beneficiary_id, uint _amount, string memory _beneficiary_details) public {
         financialAidRequestCount++;
-        beneficiaries[financialAidRequestCount] = Beneficiary(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false);
-        emit BeneficiaryCreated(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false);
+        beneficiaries[financialAidRequestCount] = Beneficiary(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false, false);
+        emit BeneficiaryCreated(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false, false);
     }
 
-    function approveBeneficiary(uint _id) public {
-        Beneficiary memory _beneficiary = beneficiaries[_id];
-        if (_beneficiary.amount <= mainBalance && _beneficiary.status == false) {
+    //find the beneficiary, check if the amount is less than the user wallet amount, decrease the user wallet amount and update the beneficiary status to true
+    function approveFinancialAidRequest(uint _beneficiary_id, uint _user_id) public {
+        Beneficiary memory _beneficiary = beneficiaries[_beneficiary_id];
+        Wallet memory _wallet = wallet[_user_id];
+        if (_beneficiary.amount <= _wallet.amount && _beneficiary.status == false && _beneficiary.verified == true) {
             _beneficiary.status = !_beneficiary.status;
             mainBalance = mainBalance - _beneficiary.amount;
+            beneficiaries[_beneficiary_id] = _beneficiary;
+            emit BeneficiaryUpdated(_beneficiary_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance, _beneficiary.status, _beneficiary.verified);
+            deductWalletBalance(_wallet.user_id, _beneficiary.amount);
+        }
+    }
+    //verify beneficiary
+    function verifyBeneficiary(uint _id) public {
+        Beneficiary memory _beneficiary = beneficiaries[_id];
+        if (_beneficiary.verified == false) {
+            _beneficiary.verified = !_beneficiary.verified;
         }
         beneficiaries[_id] = _beneficiary;
-        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance ,_beneficiary.status);
+        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance, _beneficiary.status, _beneficiary.verified);
+    }
+
+    //credit wallet
+    function updateWalletBalance(uint _user_id, uint _amount) private {
+        Wallet memory _wallet = wallet[_user_id];
+        _wallet.amount = _wallet.amount + _amount;
+        wallet[_user_id] = _wallet;
+        emit WalletUpdated(_user_id, _wallet.amount);
+    }
+    //debit wallet
+    function deductWalletBalance(uint _user_id, uint _amount) private {
+        Wallet memory _wallet = wallet[_user_id];
+        _wallet.amount = _wallet.amount - _amount;
+        wallet[_user_id] = _wallet;
+        emit WalletUpdated(_user_id, _wallet.amount);
     }
 }

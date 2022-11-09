@@ -33,10 +33,6 @@ const BeneficiarySchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
-    status: {
-        type: Boolean,
-        default: false,
-    },
     purpose: {
         type: String,
         default: false,

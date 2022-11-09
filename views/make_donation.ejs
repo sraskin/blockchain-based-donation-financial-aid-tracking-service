@@ -29,7 +29,7 @@
 <div class="position-absolute top-50 start-50 translate-middle">
     <div class="card text-center" style="width: 1000px; height: 450px">
         <div class="card-header">
-            <h2>Make donation</h2>
+            <h2>Add Balance</h2>
         </div>
         <div class="card-body">
             <div>
@@ -46,8 +46,8 @@
             </div>
         </div>
         <div class="card-footer text-muted">
-            <p>Donation instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and
-                submit the transaction id here to verify the donation. <a href="/Bank" target="_blank">Click here</a> to open Dummy Bank Internet banking website. </p>
+            <p>Instruction: Transfer money to our Bank account. Bank Name: Dummy Bank, Bank Account number:0000000 and
+                submit the transaction id here to verify the transaction. Upon successful verification your transferred amount will be added to your account. <a href="/Bank" target="_blank">Click here</a> to open Dummy Bank Internet banking website. </p>
         </div>
     </div>
 </div>
@@ -75,7 +75,7 @@
             if (res.status === 201) {
                 const bc_call = await fetch('/api/auth/blockchain/makeDonation', {
                     method: 'POST',
-                    body: JSON.stringify({donation_id: data.donation_id, amount: data.amount, details: data}),
+                    body: JSON.stringify({donor_id: data.bc_user_id, amount: data.amount, details: data}),
                     headers: {'Content-Type': 'application/json'}
                 })
                 console.log(await bc_call.json());

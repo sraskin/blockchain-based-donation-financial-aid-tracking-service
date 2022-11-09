@@ -16,7 +16,9 @@ const {
     getAllAid,
     getAllDonation,
     getAllUser,
-    approveDonation
+    verifyDonation,
+    approveDonation,
+    getWalletBalance
 } = require("./web3Communicator");
 const {adminAuth} = require("../middleware/auth");
 
@@ -34,12 +36,14 @@ router.route("/donor/donation").post(make_donation);
 router.route("/user/aid").post(make_financial_aid_request);
 
 router.route("/getMainBalance").get(getMainBalance);
+router.route("/getWalletBalance").post(getWalletBalance);
 router.route("/blockchain/registration").post(registration);
 router.route("/blockchain/getUserByID").post(getUserByID);
 router.route("/blockchain/makeAidRequest").post(makeAidRequest);
 router.route("/blockchain/getAllAidByID").post(getAllAidByID);
 router.route("/blockchain/makeDonation").post(makeDonation);
 router.route("/blockchain/getAllDonationByID").post(getAllDonationByID);
+router.route("/blockchain/verifyDonation").post(verifyDonation);
 router.route("/blockchain/approveDonation").post(approveDonation);
 router.route("/blockchain/admin/getAllAid").get(getAllAid);
 router.route("/blockchain/admin/getAllDonation").get(getAllDonation);

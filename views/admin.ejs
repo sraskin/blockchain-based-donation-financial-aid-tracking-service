@@ -102,14 +102,15 @@
                 <li class="list-group-item">Bank Name: ${aid_details.bank_name}</li>
                 <li class="list-group-item">Bank Account: ${aid_details.bank_account}</li>
                 <li class="list-group-item">Authorizer Name: ${aid_details.authorizer_name}</li>
-                <li class="list-group-item">Authorizer Name: ${aid_details.authorizer_name}</li>
                 <li class="list-group-item">Authorizer Details: ${aid_details.authorizer_phone}</li>
                 <li class="list-group-item">Beneficiary ID: ${aid_details.user_id}</li>
                 <li class="list-group-item">Beneficiary Blockchain ID: ${aid_details.bc_user_id}</li>
                 <li class="list-group-item">Aid Entry ID in Blockchain: ${aid.bc_entry_id}</li>
                 <li class="list-group-item">Aid Description: ${aid_details.details}</li>
                 <li class="list-group-item">Status: ${aid.status}</li>
-                <li class="list-group-item">${aid.status === 'Pending' ? `<button class="approve btn btn-outline-success" onclick="approveDonation(${aid.bc_entry_id})">Approve</button> <br>` : ''}</li>
+                <li class="list-group-item">Applied at: ${Date(aid.timestamp)}</li>
+                <li class="list-group-item">Verification status: ${aid.verified}</li>
+                <li class="list-group-item">${aid.verified === 'NotVerified' ? `<button class="approve btn btn-outline-success" onclick="approveDonation(${aid.bc_entry_id})">Verify</button> <br>` : ''}</li>
             </ul>
         </div>
 
@@ -150,18 +151,18 @@
     }
     getUsers()
     const approveDonation = async (id) => {
-        if (confirm("Are you sure, you want to approve this donation?")) {
-            const res = await fetch('/api/auth/blockchain/approveDonation', {
+        if (confirm("Are you sure, you want to verify this aid request?")) {
+            const res = await fetch('/api/auth/blockchain/verifyDonation', {
                 method: 'POST',
                 body: JSON.stringify({bc_entry_id: id}),
                 headers: {'Content-Type': 'application/json'}
             })
             const data = await res.json()
-            if (data.status === 'Approved') {
-                alert('Aid Request approved successfully')
+            if (data.verified === 'Verified') {
+                alert('Aid Request verified successfully')
                 window.location.reload()
             } else {
-                alert(`Insufficient Balance available in Blockchain Ledger.`)
+                alert(`Something went wrong. Please try again later`)
             }
         }
     };
