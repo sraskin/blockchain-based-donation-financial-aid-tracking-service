@@ -138,15 +138,16 @@
             all_donations.innerHTML += ul
         })
 
-        const get_main_balance_res = await fetch('/api/auth/getMainBalance')
-        const get_main_balance_data = await get_main_balance_res.json()
+        const get_details_res = await fetch('/api/auth/getDetails')
+        const get_details = await get_details_res.json()
 
         total_details.innerHTML = `
-                                <h3>Available Balance in Blockchain Ledger: ${get_main_balance_data.main_balance}</h3>
-                                <h3>Total Users: ${user_data.users.length}</h3>
-                                <h3>Total Aid Request: ${aid_data.beneficiary.length}</h3>
-                                <h3>Total Number of donations: ${donation_data.donation_details.length}</h3>
-                                <h3>Total Donated Amount: ${donation_data.total_donation}</h3>
+                                <h3>Total number of donation: ${get_details.total_number_of_donation}</h3>
+                                <h3>Total number of financial aid request: ${get_details.total_number_of_financial_aid_req}</h3>
+                                <h3>Total donation amount added by donor: ${get_details.total_amount_donation_received} BDT</h3>
+                                <h3>Total donation provided by donor: ${get_details.total_amount_donation_provided} BDT</h3>
+                                <h3>Total amount of financial aid requested: ${get_details.total_amount_aid_requested} BDT</h3>
+                                <h3>Total active donor: ${get_details.active_donors} BDT</h3>
                                 `
     }
     getUsers()

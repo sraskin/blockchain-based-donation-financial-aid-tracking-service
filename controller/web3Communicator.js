@@ -16,10 +16,30 @@ getInstance = async () => {
     return await Prekkha.deployed();
 }
 
-exports.getMainBalance = async (req, res, next) => {
+//show total donation, total aid, total balance
+exports.getDetails = async (req, res, next) => {
     const instance = await getInstance();
-    const main_balance = await instance.mainBalance();
-    res.status(200).json({main_balance: main_balance.toNumber()});
+    const total_number_of_donation = await instance.donationCount();
+    const total_number_of_financial_aid_req = await instance.financialAidRequestCount();
+    const total_amount_donation_received = await instance.total_donation_received();
+    const total_amount_donation_provided = await instance.total_financial_aid_provided();
+    const total_amount_aid_requested = await instance.total_financial_aid_requested();
+    //search in donation for active donor who donated
+    const active_donors = await Donation.find({bc_entry_id: {$ne: null}});
+    const active_donors_list = [];
+    active_donors.map((item) => {
+        active_donors_list.push(item.user_id);
+    })
+    //filter unique user
+    const unique_active_donors = [...new Set(active_donors_list)];
+    res.status(200).json({
+        total_number_of_donation: total_number_of_donation.toNumber(),
+        total_number_of_financial_aid_req: total_number_of_financial_aid_req.toNumber(),
+        total_amount_donation_received: total_amount_donation_received.toNumber(),
+        total_amount_donation_provided: total_amount_donation_provided.toNumber(),
+        total_amount_aid_requested: total_amount_aid_requested.toNumber(),
+        active_donors: unique_active_donors.length
+    });
 }
 
 exports.getWalletBalance = async (req, res, next) => {

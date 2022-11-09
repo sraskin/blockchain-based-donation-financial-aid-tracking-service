@@ -1,10 +1,12 @@
 pragma solidity ^0.5.0;
 
 contract Prekkha {
-    uint public mainBalance = 0;
     uint public userCount = 0;
     uint public donationCount = 0;
     uint public financialAidRequestCount = 0;
+    uint public total_donation_received = 0;
+    uint public total_financial_aid_provided = 0;
+    uint public total_financial_aid_requested = 0;
 
     struct User {
         uint id;
@@ -67,20 +69,20 @@ contract Prekkha {
         string beneficiary_id,
         uint amount,
         string beneficiary_details,
-        uint currentMainBalance,
         bool status,
         bool verified
     );
 
     event WalletUpdated(
         uint user_id,
-        uint amount
+        uint previous_amount,
+        uint current_amount
     );
 
     function makeDonation(uint _donor_id, uint _amount, string memory _donation_details) public {
         donationCount++;
         donations[donationCount] = Donation(donationCount, _donor_id, _amount, _donation_details);
-        mainBalance = mainBalance + _amount;
+        total_donation_received += _amount;
         emit DonationCreated(donationCount, _donor_id, _amount, _donation_details);
         updateWalletBalance(_donor_id, _amount);
     }
@@ -95,6 +97,7 @@ contract Prekkha {
     function financialAidRequest(string memory _beneficiary_id, uint _amount, string memory _beneficiary_details) public {
         financialAidRequestCount++;
         beneficiaries[financialAidRequestCount] = Beneficiary(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false, false);
+        total_financial_aid_requested += _amount;
         emit BeneficiaryCreated(financialAidRequestCount, _beneficiary_id, _amount, _beneficiary_details, false, false);
     }
 
@@ -104,9 +107,9 @@ contract Prekkha {
         Wallet memory _wallet = wallet[_user_id];
         if (_beneficiary.amount <= _wallet.amount && _beneficiary.status == false && _beneficiary.verified == true) {
             _beneficiary.status = !_beneficiary.status;
-            mainBalance = mainBalance - _beneficiary.amount;
+            total_financial_aid_provided += _beneficiary.amount;
             beneficiaries[_beneficiary_id] = _beneficiary;
-            emit BeneficiaryUpdated(_beneficiary_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance, _beneficiary.status, _beneficiary.verified);
+            emit BeneficiaryUpdated(_beneficiary_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, _beneficiary.status, _beneficiary.verified);
             deductWalletBalance(_wallet.user_id, _beneficiary.amount);
         }
     }
@@ -117,7 +120,7 @@ contract Prekkha {
             _beneficiary.verified = !_beneficiary.verified;
         }
         beneficiaries[_id] = _beneficiary;
-        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, mainBalance, _beneficiary.status, _beneficiary.verified);
+        emit BeneficiaryUpdated(_id, _beneficiary.beneficiary_id, _beneficiary.amount, _beneficiary.beneficiary_details, _beneficiary.status, _beneficiary.verified);
     }
 
     //credit wallet
@@ -125,13 +128,13 @@ contract Prekkha {
         Wallet memory _wallet = wallet[_user_id];
         _wallet.amount = _wallet.amount + _amount;
         wallet[_user_id] = _wallet;
-        emit WalletUpdated(_user_id, _wallet.amount);
+        emit WalletUpdated(_wallet.user_id, _wallet.amount - _amount, _wallet.amount);
     }
     //debit wallet
     function deductWalletBalance(uint _user_id, uint _amount) private {
         Wallet memory _wallet = wallet[_user_id];
         _wallet.amount = _wallet.amount - _amount;
         wallet[_user_id] = _wallet;
-        emit WalletUpdated(_user_id, _wallet.amount);
+        emit WalletUpdated(_wallet.user_id, _wallet.amount + _amount, _wallet.amount);
     }
 }

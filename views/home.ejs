@@ -60,10 +60,10 @@
     const active_donor = document.getElementById('active_donor');
     const total_donation = document.getElementById('total_donation');
     (getUsers = async () => {
-        const fetch_all_donation_res = await fetch('/api/auth/blockchain/admin/getAllDonation')
-        const fetch_all_donation_res_data = await fetch_all_donation_res.json()
-        active_donor.innerHTML = fetch_all_donation_res_data.active_donors;
-        total_donation.innerHTML = fetch_all_donation_res_data.total_donation;
+        const fetch_all_details_res = await fetch('/api/auth/getDetails')
+        const all_details = await fetch_all_details_res.json()
+        active_donor.innerHTML = all_details.active_donors;
+        total_donation.innerHTML = all_details.total_amount_donation_provided;
     })();
 </script>
 </body>

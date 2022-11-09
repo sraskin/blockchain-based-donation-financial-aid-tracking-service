@@ -6,7 +6,6 @@ const {make_payment, getTransaction} = require("./bank");
 const {make_donation} = require("./donation");
 const {make_financial_aid_request} = require("./beneficiary");
 const {
-    getMainBalance,
     registration,
     getUserByID,
     makeAidRequest,
@@ -18,7 +17,8 @@ const {
     getAllUser,
     verifyDonation,
     approveDonation,
-    getWalletBalance
+    getWalletBalance,
+    getDetails
 } = require("./web3Communicator");
 const {adminAuth} = require("../middleware/auth");
 
@@ -35,7 +35,7 @@ router.route("/donor/donation").post(make_donation);
 
 router.route("/user/aid").post(make_financial_aid_request);
 
-router.route("/getMainBalance").get(getMainBalance);
+router.route("/getDetails").get(getDetails);
 router.route("/getWalletBalance").post(getWalletBalance);
 router.route("/blockchain/registration").post(registration);
 router.route("/blockchain/getUserByID").post(getUserByID);
