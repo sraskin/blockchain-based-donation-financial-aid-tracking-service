@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Blockchain Based Donation Service",
   "author": "Shariar Khan <shuvho.91@gmail.com>",
+  "license": "MIT",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
