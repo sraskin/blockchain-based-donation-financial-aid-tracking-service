@@ -1,0 +1,30 @@
+{
+  "name": "prekkha-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain Based Donation Service",
+  "author": "Shariar Khan <shuvho.91@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cookieparser": "^0.1.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.10.0",
+    "mongoose": "^6.1.0",
+    "nodemon": "^2.0.15",
+    "truffle": "5.0.2",
+    "truffle-contract": "^4.0.31",
+    "web3": "^1.8.0",
+    "web3-eth": "^1.8.0"
+  }
+}

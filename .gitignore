@@ -340,11 +340,7 @@ dist
 .DS_Store
 
 
-/db.js
-
 /package-lock.json
 /build/*
 /node_modules/*
-
 /.env
-!/.env.example
