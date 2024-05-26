@@ -1,23 +1,21 @@
-Educational Use License
+MIT License
 
-This project is licensed under the terms and conditions specified below:
+Copyright (c) 2024 Shariar Khan
 
-1. Educational Use:
-   - You are free to use, copy, modify, and distribute this project for educational purposes only.
-   - Educational purposes include use in teaching, academic research, and learning activities.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-2. Commercial Use Restrictions:
-   - Any use of this project for commercial purposes is strictly prohibited without explicit permission from the original author.
-   - Commercial purposes include, but are not limited to, selling the software, incorporating it into a product for sale, or using it in a commercial service offering.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-3. Funding and Profit-Sharing:
-   - If you receive funding based on the use of this project for educational purposes, you must obtain permission from the original author to continue using the project.
-   - Before continuing to use the project after receiving funding, you must enter into a contract with the original author.
-   - You agree to share 40% of any profits derived from the use of this project with the original author.
-   - Profits are defined as any financial gain obtained from the use of this project, including but not limited to grants, investment returns, and revenue from products or services incorporating this project.
-
-4. Attribution:
-   - You must give appropriate credit to the original author, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the author endorses you or your use.
-
-5. Disclaimer:
-   - This project is provided "as is" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the author be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the project or the use or other dealings in the project.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
